@@ -34,6 +34,7 @@ public final class PVPServer extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        managers = new ArrayList<>();
         saveDefaultConfig();
         dispatcher = new PacketEventDispatcher(this);
         dispatcher.register(new ListenerCrystalPlace(), PacketPlayInUseItem.class);
@@ -41,7 +42,6 @@ public final class PVPServer extends JavaPlugin {
         registerListener(new TestListener());
         addManager(new KitManager());
         managers.forEach(m -> m.init(this));
-        managers = new ArrayList<>();
     }
 
     public void addManager(Manager manager) {
