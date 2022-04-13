@@ -13,8 +13,6 @@ public abstract class Manager {
     @NonNull
     private final String name;
 
-    protected File dataFolder;
-
     public abstract void init(PVPServer plugin);
 
     public abstract void destruct(PVPServer plugin);
