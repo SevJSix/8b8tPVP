@@ -13,6 +13,7 @@ import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.CompletableFuture;
 
 public class ListenerTotemPop implements PacketListener {
 
@@ -36,7 +37,8 @@ public class ListenerTotemPop implements PacketListener {
         Entity entity = world.getEntity(entityId.getInt(packet));
         if (entity == null || entity.getWorld() != world) return;
         if (world.getEntity(entityId.getInt(packet)) instanceof EntityPlayer) {
-            TotemPopEvent popEvent = new TotemPopEvent((Player) entity.getBukkitEntity());
+            Player player = (Player) entity.getBukkitEntity();
+            TotemPopEvent popEvent = new TotemPopEvent(player);
             Bukkit.getServer().getPluginManager().callEvent(popEvent);
         }
     }
