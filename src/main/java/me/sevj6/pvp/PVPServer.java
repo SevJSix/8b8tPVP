@@ -1,10 +1,14 @@
 package me.sevj6.pvp;
 
 import lombok.Getter;
+import me.sevj6.pvp.util.customevent.eventposters.ListenerCrystalPlace;
+import me.sevj6.pvp.util.customevent.eventposters.ListenerTotemPop;
 import me.txmc.protocolapi.PacketEventDispatcher;
 import me.txmc.protocolapi.PacketListener;
 import me.txmc.protocolapi.reflection.ClassProcessor;
 import net.minecraft.server.v1_12_R1.Packet;
+import net.minecraft.server.v1_12_R1.PacketPlayInUseItem;
+import net.minecraft.server.v1_12_R1.PacketPlayOutEntityStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,6 +35,10 @@ public final class PVPServer extends JavaPlugin {
         saveDefaultConfig();
         dispatcher = new PacketEventDispatcher(this);
         managers = new ArrayList<>();
+        // post custom events
+        // TODO: make a manager for custom events
+        dispatcher.register(new ListenerCrystalPlace(), PacketPlayInUseItem.class);
+        dispatcher.register(new ListenerTotemPop(), PacketPlayOutEntityStatus.class);
     }
 
     public void addManager(Manager manager) {
