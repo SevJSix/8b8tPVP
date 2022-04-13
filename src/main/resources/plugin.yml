@@ -1,0 +1,9 @@
+name: 8b8tPVP
+version: ${project.version}
+main: me.sevj6.pvp.PVPServer
+authors: [ SevJ6 ]
+description: Main plugin for 8b8tpvp hosted by leee developed by SevJ6
+load: POSTWORLD
+commands:
+  portal:
+    description: make a portal
