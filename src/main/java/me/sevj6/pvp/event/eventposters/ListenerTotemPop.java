@@ -1,6 +1,6 @@
-package me.sevj6.pvp.util.customevent.eventposters;
+package me.sevj6.pvp.event.eventposters;
 
-import me.sevj6.pvp.util.customevent.TotemPopEvent;
+import me.sevj6.pvp.event.TotemPopEvent;
 import me.txmc.protocolapi.PacketEvent;
 import me.txmc.protocolapi.PacketListener;
 import me.txmc.protocolapi.reflection.GetField;
@@ -13,7 +13,6 @@ import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
-import java.util.concurrent.CompletableFuture;
 
 public class ListenerTotemPop implements PacketListener {
 
