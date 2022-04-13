@@ -1,6 +1,7 @@
 package me.sevj6.pvp;
 
 import lombok.Getter;
+import me.sevj6.pvp.event.eventposters.ListenerUse32k;
 import me.sevj6.pvp.kit.KitManager;
 import me.sevj6.pvp.event.TestListener;
 import me.sevj6.pvp.event.eventposters.ListenerCrystalPlace;
@@ -9,6 +10,7 @@ import me.txmc.protocolapi.PacketEventDispatcher;
 import me.txmc.protocolapi.PacketListener;
 import me.txmc.protocolapi.reflection.ClassProcessor;
 import net.minecraft.server.v1_12_R1.Packet;
+import net.minecraft.server.v1_12_R1.PacketPlayInUseEntity;
 import net.minecraft.server.v1_12_R1.PacketPlayInUseItem;
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityStatus;
 import org.bukkit.Bukkit;
@@ -39,6 +41,7 @@ public final class PVPServer extends JavaPlugin {
         dispatcher = new PacketEventDispatcher(this);
         dispatcher.register(new ListenerCrystalPlace(), PacketPlayInUseItem.class);
         dispatcher.register(new ListenerTotemPop(), PacketPlayOutEntityStatus.class);
+        dispatcher.register(new ListenerUse32k(), PacketPlayInUseEntity.class);
         registerListener(new TestListener());
         addManager(new KitManager());
         managers.forEach(m -> m.init(this));

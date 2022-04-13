@@ -14,4 +14,9 @@ public class TestListener implements Listener {
     public void onCrystal(PlayerPlaceCrystalEvent event) {
         event.explodeCrystal();
     }
+
+    @EventHandler
+    public void on32k(PlayerUse32kEvent event) {
+        System.out.println(event.getPlayer() + " is using a 32k against " + event.getTarget());
+    }
 }

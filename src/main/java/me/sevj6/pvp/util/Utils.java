@@ -115,4 +115,8 @@ public class Utils {
         inventory.update();
         log(String.format("&aCleared inventory&r&3 %s&r&a with window ID&r&3 %d&r&a because it had excessive NBT data", inventory.getClass().getSimpleName(), player.activeContainer.windowId));
     }
+
+    public static boolean isIllegallyEnchanted(org.bukkit.inventory.ItemStack itemStack) {
+        return itemStack.getEnchantments().entrySet().stream().anyMatch(e -> e.getValue() > e.getKey().getMaxLevel());
+    }
 }
