@@ -9,6 +9,7 @@ import net.minecraft.server.v1_12_R1.PacketPlayInUseEntity;
 import net.minecraft.server.v1_12_R1.World;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -26,7 +27,7 @@ public class ListenerUse32k implements PacketListener {
         if (Utils.isIllegallyEnchanted(stackInHand)) {
             World world = ((CraftWorld) attacker.getWorld()).getHandle();
             Optional.ofNullable(packet.a(world)).ifPresent(entity -> {
-                PlayerUse32kEvent use32kEvent = new PlayerUse32kEvent(attacker, entity.getBukkitEntity(), stackInHand);
+                PlayerUse32kEvent use32kEvent = new PlayerUse32kEvent(attacker, entity.getBukkitEntity(), stackInHand, (hand == EnumHand.OFF_HAND) ? 45 : attacker.getInventory().getHeldItemSlot());
                 Bukkit.getServer().getPluginManager().callEvent(use32kEvent);
                 if (use32kEvent.isCancelled()) event.setCancelled(true);
             });

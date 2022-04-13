@@ -17,6 +17,10 @@ public class TestListener implements Listener {
 
     @EventHandler
     public void on32k(PlayerUse32kEvent event) {
-        System.out.println(event.getPlayer() + " is using a 32k against " + event.getTarget());
+        if (event.getDistanceBetweenAttackerAndTarget() > 8 ||  event.isPlayerAttackingTooFarFromActiveContainer()) {
+            event.setCancelled(true);
+            event.getPlayer().getInventory().remove(event.getPlayer().getInventory().getItem(event.getItemSlot()));
+            System.out.println("prevented " + event.getPlayer().getName() + " from possibly 32k blink teleporting");
+        }
     }
 }
