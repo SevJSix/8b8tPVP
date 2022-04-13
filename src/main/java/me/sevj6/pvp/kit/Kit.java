@@ -1,6 +1,5 @@
 package me.sevj6.pvp.kit;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.txmc.protocolapi.reflection.ClassProcessor;
