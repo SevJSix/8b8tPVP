@@ -12,6 +12,6 @@ public class TestListener implements Listener {
 
     @EventHandler
     public void onCrystal(PlayerPlaceCrystalEvent event) {
-        System.out.println("player has placed a crystal at " + event.getCrystalLocation());
+        event.explodeCrystal();
     }
 }
