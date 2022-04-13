@@ -1,6 +1,6 @@
-package me.sevj6.pvp.customevent.eventposters;
+package me.sevj6.pvp.event.eventposters;
 
-import me.sevj6.pvp.customevent.TotemPopEvent;
+import me.sevj6.pvp.event.TotemPopEvent;
 import me.txmc.protocolapi.PacketEvent;
 import me.txmc.protocolapi.PacketListener;
 import me.txmc.protocolapi.reflection.GetField;

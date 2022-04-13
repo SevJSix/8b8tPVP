@@ -1,4 +1,4 @@
-package me.sevj6.pvp.customevent;
+package me.sevj6.pvp.event;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
