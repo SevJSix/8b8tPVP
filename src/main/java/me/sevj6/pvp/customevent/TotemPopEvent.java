@@ -1,4 +1,4 @@
-package me.sevj6.pvp.util.customevent;
+package me.sevj6.pvp.customevent;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,6 @@ public class TotemPopEvent extends Event {
 
     @Override
     public HandlerList getHandlers() {
-        return null;
+        return handlers;
     }
 }

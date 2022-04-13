@@ -1,4 +1,4 @@
-package me.sevj6.pvp.util.customevent;
+package me.sevj6.pvp.customevent;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

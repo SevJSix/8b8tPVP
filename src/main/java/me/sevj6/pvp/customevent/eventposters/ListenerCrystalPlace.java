@@ -1,6 +1,6 @@
-package me.sevj6.pvp.util.customevent.eventposters;
+package me.sevj6.pvp.customevent.eventposters;
 
-import me.sevj6.pvp.util.customevent.PlayerPlaceCrystalEvent;
+import me.sevj6.pvp.customevent.PlayerPlaceCrystalEvent;
 import me.txmc.protocolapi.PacketEvent;
 import me.txmc.protocolapi.PacketListener;
 import net.minecraft.server.v1_12_R1.BlockPosition;

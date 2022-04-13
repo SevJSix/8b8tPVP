@@ -2,9 +2,9 @@ package me.sevj6.pvp;
 
 import lombok.Getter;
 import me.sevj6.pvp.kit.KitManager;
-import me.sevj6.pvp.util.customevent.TestListener;
-import me.sevj6.pvp.util.customevent.eventposters.ListenerCrystalPlace;
-import me.sevj6.pvp.util.customevent.eventposters.ListenerTotemPop;
+import me.sevj6.pvp.customevent.TestListener;
+import me.sevj6.pvp.customevent.eventposters.ListenerCrystalPlace;
+import me.sevj6.pvp.customevent.eventposters.ListenerTotemPop;
 import me.txmc.protocolapi.PacketEventDispatcher;
 import me.txmc.protocolapi.PacketListener;
 import me.txmc.protocolapi.reflection.ClassProcessor;
