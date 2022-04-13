@@ -1,7 +1,6 @@
 package me.sevj6.pvp;
 
 import lombok.Getter;
-import me.sevj6.pvp.kit.KitManager;
 import me.txmc.protocolapi.PacketEventDispatcher;
 import me.txmc.protocolapi.PacketListener;
 import me.txmc.protocolapi.reflection.ClassProcessor;
@@ -32,8 +31,6 @@ public final class PVPServer extends JavaPlugin {
         saveDefaultConfig();
         dispatcher = new PacketEventDispatcher(this);
         managers = new ArrayList<>();
-        addManager(new KitManager());
-        managers.forEach(m -> m.init(this));
     }
 
     public void addManager(Manager manager) {
