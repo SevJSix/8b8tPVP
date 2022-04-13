@@ -1,6 +1,7 @@
 package me.sevj6.pvp;
 
 import lombok.Getter;
+import me.sevj6.pvp.util.customevent.TestListener;
 import me.sevj6.pvp.util.customevent.eventposters.ListenerCrystalPlace;
 import me.sevj6.pvp.util.customevent.eventposters.ListenerTotemPop;
 import me.txmc.protocolapi.PacketEventDispatcher;
@@ -39,6 +40,7 @@ public final class PVPServer extends JavaPlugin {
         // TODO: make a manager for custom events
         dispatcher.register(new ListenerCrystalPlace(), PacketPlayInUseItem.class);
         dispatcher.register(new ListenerTotemPop(), PacketPlayOutEntityStatus.class);
+        registerListener(new TestListener());
     }
 
     public void addManager(Manager manager) {
