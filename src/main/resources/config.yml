@@ -1,0 +1,32 @@
+SpawnPoints:
+  MainHub:
+    x: 0.5
+    y: 100
+    z: 0.5
+  KitCreator:
+    x: 0.5
+    y: 100
+    z: 0.5
+
+# Teleport players to a random location inside each separate arena from the main arena
+ArenaRandomSpawn:
+  Dispenser32k:
+    x_range: 25
+    z_range: 25
+  Hopper32k:
+    x_range: 25
+    z_range: 25
+
+TabList:
+  Header:
+    - ""
+    - "&r&48b8t&r&9PVP"
+    - "&r"
+  Footer:
+    - ""
+    - "&r%tps% &7tps - %ping% ping - %players% players - %uptime% uptime"
+    - "&r"
+
+# Automatically translate chat messages, and tablist text to each players game language
+Language:
+  Enable_Localization: true
