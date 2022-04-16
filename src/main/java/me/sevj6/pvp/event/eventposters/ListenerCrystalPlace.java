@@ -28,7 +28,7 @@ public class ListenerCrystalPlace implements PacketListener {
         boolean isAttemptingToCrystal = holdingCrystal && (typeAtPos == org.bukkit.Material.OBSIDIAN || typeAtPos == org.bukkit.Material.BEDROCK);
         if (isAttemptingToCrystal) {
             Location crystalLocation = placeLocation.clone().add(0.5, 1, 0.5);
-            EntityEnderCrystal enderCrystal = crystalLocation.getNearbyEntitiesByType(EnderCrystal.class, 0, 1, 0).stream().map(crystal -> ((CraftEnderCrystal) crystal).getHandle()).findAny().orElse(null);
+            EntityEnderCrystal enderCrystal = crystalLocation.getNearbyEntitiesByType(EnderCrystal.class, 0.5, 1, 0.5).stream().map(crystal -> ((CraftEnderCrystal) crystal).getHandle()).findAny().orElse(null);
             PlayerPlaceCrystalEvent crystalEvent = new PlayerPlaceCrystalEvent(player, enderCrystal, crystalLocation, placeLocation);
             Bukkit.getServer().getPluginManager().callEvent(crystalEvent);
             if (crystalEvent.isCancelled()) event.setCancelled(true);

@@ -1,7 +1,6 @@
 package me.sevj6.pvp;
 
 import lombok.Getter;
-import me.sevj6.pvp.event.TestListener;
 import me.sevj6.pvp.event.eventposters.ListenerCrystalPlace;
 import me.sevj6.pvp.event.eventposters.ListenerTotemPop;
 import me.sevj6.pvp.event.eventposters.ListenerUse32k;
@@ -42,7 +41,6 @@ public final class PVPServer extends JavaPlugin {
         dispatcher.register(new ListenerCrystalPlace(), PacketPlayInUseItem.class);
         dispatcher.register(new ListenerTotemPop(), PacketPlayOutEntityStatus.class);
         dispatcher.register(new ListenerUse32k(), PacketPlayInUseEntity.class);
-        registerListener(new TestListener());
         addManager(new KitManager());
         managers.forEach(m -> m.init(this));
     }

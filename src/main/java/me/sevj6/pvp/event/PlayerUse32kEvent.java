@@ -2,6 +2,7 @@ package me.sevj6.pvp.event;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -31,9 +32,11 @@ public class PlayerUse32kEvent extends Event implements Cancellable {
 
     public boolean isPlayerAttackingTooFarFromActiveContainer() {
         if (player.getOpenInventory() != null) {
+            boolean checkReachable = ((CraftPlayer) player).getHandle().activeContainer.checkReachable;
             InventoryView container = player.getOpenInventory();
             return container.getBottomInventory().getLocation().distance(player.getLocation()) > 7.5 ||
-                    container.getTopInventory().getLocation().distance(player.getLocation()) > 7.5;
+                    container.getTopInventory().getLocation().distance(player.getLocation()) > 7.5
+                    || !checkReachable;
         }
         return false;
     }
