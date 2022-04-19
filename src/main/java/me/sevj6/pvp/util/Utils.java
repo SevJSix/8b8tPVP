@@ -2,6 +2,7 @@ package me.sevj6.pvp.util;
 
 import me.sevj6.pvp.Manager;
 import me.sevj6.pvp.PVPServer;
+import me.sevj6.pvp.arena.Arena;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.World;
 import org.bukkit.*;
@@ -118,5 +119,9 @@ public class Utils {
 
     public static boolean isIllegallyEnchanted(org.bukkit.inventory.ItemStack itemStack) {
         return itemStack.getEnchantments().entrySet().stream().anyMatch(e -> e.getValue() > e.getKey().getMaxLevel());
+    }
+
+    public static boolean isPlayerInArena(Player player, Arena arena) {
+        return arena.isPlayerInArena(player);
     }
 }

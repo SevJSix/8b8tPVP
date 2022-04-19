@@ -28,5 +28,6 @@ TabList:
     - "&r"
 
 # Automatically translate chat messages, and tablist text to each players game language
+# Notice: translates server-sent messages only (i.e. /help), not all player sent chat messages
 Language:
   Enable_Localization: true
