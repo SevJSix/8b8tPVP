@@ -31,6 +31,12 @@ public class Arena extends AbstractArena {
         this(name, loc1.getWorld(), loc1.getBlockX(), loc1.getBlockY(), loc1.getBlockZ(), loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ());
     }
 
+    public void loadArenaChunks() {
+        locations.forEach(location -> {
+            if (!location.getChunk().isLoaded()) location.getChunk().load();
+        });
+    }
+
     @Override
     public void clear() {
         findAllBlocks(locations).forEach(block -> {

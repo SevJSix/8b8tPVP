@@ -9,7 +9,7 @@ SpawnPoints:
     z: 0.5
 
 # Teleport players to a random location inside each separate arena from the main arena
-ArenaRandomSpawn:
+ArenaManager:
   Dispenser32k:
     x_range: 25
     z_range: 25

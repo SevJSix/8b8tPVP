@@ -6,15 +6,19 @@ import me.sevj6.pvp.arena.Arena;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.World;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 
 public class Utils {
     private static final DecimalFormat format = new DecimalFormat("#.##");
     private static final String PREFIX = "&7&r&b&38b8t&r&aPvP&r&7&r";
+    private static final List<Class<? extends Entity>> invalidEntities = Arrays.asList(EntityItemFrame.class, EntityPlayer.class);
 
     public static String translateChars(String input) {
         return ChatColor.translateAlternateColorCodes('&', input);
@@ -123,5 +127,14 @@ public class Utils {
 
     public static boolean isPlayerInArena(Player player, Arena arena) {
         return arena.isPlayerInArena(player);
+    }
+
+    public static void removeEntities() {
+        ((CraftServer) Bukkit.getServer()).getHandle().getServer()
+                .worlds
+                .forEach(worldServer -> worldServer.entityList
+                        .stream()
+                        .filter(entity -> !invalidEntities.contains(entity.getClass()))
+                        .forEach(Entity::killEntity));
     }
 }

@@ -1,6 +1,9 @@
 package me.sevj6.pvp;
 
 import lombok.Getter;
+import me.sevj6.pvp.arena.Arena;
+import me.sevj6.pvp.arena.ArenaManager;
+import me.sevj6.pvp.arena.Test;
 import me.sevj6.pvp.event.TestListener;
 import me.sevj6.pvp.event.eventposters.ListenerCrystalPlace;
 import me.sevj6.pvp.event.eventposters.ListenerTotemPop;
@@ -30,6 +33,8 @@ public final class PVPServer extends JavaPlugin {
     public static final long START_TIME = System.currentTimeMillis();
     @Getter
     private static PVPServer instance;
+    @Getter
+    private static ArenaManager arenaManager;
     private PacketEventDispatcher dispatcher;
     private List<Manager> managers;
 
@@ -43,10 +48,12 @@ public final class PVPServer extends JavaPlugin {
         dispatcher.register(new ListenerTotemPop(), PacketPlayOutEntityStatus.class);
         dispatcher.register(new ListenerUse32k(), PacketPlayInUseEntity.class);
         Bukkit.getPluginManager().registerEvents(new TestListener(), this);
-        // IF YOU SEE THIS YOU ARE A RETARD
         addManager(new KitManager());
-        // loading up mc
+        arenaManager = new ArenaManager();
+        addManager(arenaManager);
         managers.forEach(m -> m.init(this));
+        arenaManager.getArenas().forEach(Arena::loadArenaChunks);
+        getCommand("clear").setExecutor(new Test());
     }
 
     public void addManager(Manager manager) {
