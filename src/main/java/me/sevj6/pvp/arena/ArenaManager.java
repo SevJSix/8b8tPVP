@@ -3,6 +3,7 @@ package me.sevj6.pvp.arena;
 import lombok.Getter;
 import me.sevj6.pvp.Manager;
 import me.sevj6.pvp.PVPServer;
+import me.sevj6.pvp.arena.boiler.Arena;
 import net.minecraft.server.v1_12_R1.BlockPosition;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;

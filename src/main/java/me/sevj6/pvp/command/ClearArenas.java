@@ -1,7 +1,7 @@
 package me.sevj6.pvp.command;
 
 import me.sevj6.pvp.PVPServer;
-import me.sevj6.pvp.arena.Arena;
+import me.sevj6.pvp.arena.boiler.Arena;
 import me.sevj6.pvp.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

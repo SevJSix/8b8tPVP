@@ -1,4 +1,4 @@
-package me.sevj6.pvp.arena;
+package me.sevj6.pvp.arena.boiler;
 
 import net.minecraft.server.v1_12_R1.BlockPosition;
 import org.bukkit.Bukkit;
@@ -71,7 +71,7 @@ public class Arena extends AbstractArena {
 
     @Override
     public List<Block> findAllBlocks(List<Location> locations) {
-        return locations.stream().map(Location::getBlock).filter(block -> !invalidMaterials.contains(block.getType())).collect(Collectors.toList());
+        return locations.stream().map(Location::getBlock).collect(Collectors.toList());
     }
 
     @Override

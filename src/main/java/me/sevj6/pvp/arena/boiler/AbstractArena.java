@@ -1,4 +1,4 @@
-package me.sevj6.pvp.arena;
+package me.sevj6.pvp.arena.boiler;
 
 import lombok.Getter;
 import net.minecraft.server.v1_12_R1.BlockPosition;

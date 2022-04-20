@@ -2,7 +2,7 @@ package me.sevj6.pvp.util;
 
 import me.sevj6.pvp.Manager;
 import me.sevj6.pvp.PVPServer;
-import me.sevj6.pvp.arena.Arena;
+import me.sevj6.pvp.arena.boiler.Arena;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Chunk;
 import org.bukkit.World;

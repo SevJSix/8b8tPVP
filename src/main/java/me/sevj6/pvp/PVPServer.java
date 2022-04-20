@@ -1,7 +1,7 @@
 package me.sevj6.pvp;
 
 import lombok.Getter;
-import me.sevj6.pvp.arena.Arena;
+import me.sevj6.pvp.arena.boiler.Arena;
 import me.sevj6.pvp.arena.ArenaManager;
 import me.sevj6.pvp.command.ClearArenas;
 import me.sevj6.pvp.event.TestListener;
