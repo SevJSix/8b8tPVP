@@ -4,9 +4,10 @@ import me.sevj6.pvp.Manager;
 import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.arena.Arena;
 import net.minecraft.server.v1_12_R1.*;
+import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Method;
@@ -18,7 +19,7 @@ import java.util.logging.Level;
 public class Utils {
     private static final DecimalFormat format = new DecimalFormat("#.##");
     private static final String PREFIX = "&7&r&b&38b8t&r&aPvP&r&7&r";
-    private static final List<Class<? extends Entity>> invalidEntities = Arrays.asList(EntityItemFrame.class, EntityPlayer.class);
+    private static final List<EntityType> invalidEntityTypes = Arrays.asList(EntityType.PLAYER, EntityType.ITEM_FRAME, EntityType.ARMOR_STAND);
 
     public static String translateChars(String input) {
         return ChatColor.translateAlternateColorCodes('&', input);
@@ -130,11 +131,13 @@ public class Utils {
     }
 
     public static void removeEntities() {
-        ((CraftServer) Bukkit.getServer()).getHandle().getServer()
-                .worlds
-                .forEach(worldServer -> worldServer.entityList
-                        .stream()
-                        .filter(entity -> !invalidEntities.contains(entity.getClass()))
-                        .forEach(Entity::killEntity));
+        for (World world : Bukkit.getServer().getWorlds()) {
+            for (Chunk chunk : world.getLoadedChunks()) {
+                for (org.bukkit.entity.Entity entity : chunk.getEntities()) {
+                    if (invalidEntityTypes.contains(entity.getType())) return;
+                    entity.remove();
+                }
+            }
+        }
     }
 }

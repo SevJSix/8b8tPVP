@@ -3,7 +3,7 @@ package me.sevj6.pvp;
 import lombok.Getter;
 import me.sevj6.pvp.arena.Arena;
 import me.sevj6.pvp.arena.ArenaManager;
-import me.sevj6.pvp.arena.Test;
+import me.sevj6.pvp.command.ClearArenas;
 import me.sevj6.pvp.event.TestListener;
 import me.sevj6.pvp.event.eventposters.ListenerCrystalPlace;
 import me.sevj6.pvp.event.eventposters.ListenerTotemPop;
@@ -53,7 +53,7 @@ public final class PVPServer extends JavaPlugin {
         addManager(arenaManager);
         managers.forEach(m -> m.init(this));
         arenaManager.getArenas().forEach(Arena::loadArenaChunks);
-        getCommand("clear").setExecutor(new Test());
+        getCommand("clear").setExecutor(new ClearArenas());
     }
 
     public void addManager(Manager manager) {
