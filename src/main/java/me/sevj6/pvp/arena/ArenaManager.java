@@ -29,13 +29,6 @@ public class ArenaManager extends Manager {
         arenas.add(dispenser32k);
     }
 
-    public Arena getArenaByName(String name) {
-        for (Arena arena : arenas) {
-            if (arena.getName().toLowerCase().equals(name.toLowerCase())) return arena;
-        }
-        return null;
-    }
-
     @Override
     public void destruct(PVPServer plugin) {
         arenas.clear();
