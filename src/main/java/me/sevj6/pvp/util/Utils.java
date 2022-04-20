@@ -126,8 +126,11 @@ public class Utils {
         return itemStack.getEnchantments().entrySet().stream().anyMatch(e -> e.getValue() > e.getKey().getMaxLevel());
     }
 
-    public static boolean isPlayerInArena(Player player, Arena arena) {
-        return arena.isPlayerInArena(player);
+    public static boolean isPlayerInArena(Player player) {
+        for (Arena arena : PVPServer.getArenaManager().getArenas()) {
+            if (arena.isPlayerInArena(player)) return true;
+        }
+        return false;
     }
 
     public static void removeEntities() {
@@ -139,5 +142,13 @@ public class Utils {
                 }
             }
         }
+    }
+
+    private static String format(double tps) {
+        return (tps > 18.0D ? "§a" : (tps > 16.0D ? "§e" : "§c")) + (tps > 20.0D ? "" : "") + String.format("%.2f", Math.min((double) Math.round(tps * 100.0D) / 100.0D, 20.0D));
+    }
+
+    public static String getRealTps() {
+        return format(Bukkit.getServer().getTPS()[0]);
     }
 }

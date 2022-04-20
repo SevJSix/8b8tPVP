@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class Arena extends AbstractArena {
 
     private final List<Location> locations = getAllLocations(getFirstPosition(), getSecondPosition());
-    protected List<Material> invalidMaterials = Arrays.asList(Material.AIR, Material.BEDROCK, Material.DISPENSER);
+    protected List<Material> invalidMaterials = Arrays.asList(Material.AIR, Material.BEDROCK);
 
     public Arena(String name, World world, int x1, int y1, int z1, int x2, int y2, int z2) {
         super(name, world, x1, y1, z1, x2, y2, z2);
@@ -67,7 +67,7 @@ public class Arena extends AbstractArena {
 
     @Override
     public List<Block> findAllBlocks(List<Location> locations) {
-        return locations.stream().map(Location::getBlock).collect(Collectors.toList());
+        return locations.stream().map(Location::getBlock).filter(block -> !invalidMaterials.contains(block.getType())).collect(Collectors.toList());
     }
 
     @Override

@@ -1,14 +1,15 @@
 package me.sevj6.pvp;
 
 import lombok.Getter;
-import me.sevj6.pvp.arena.boiler.Arena;
 import me.sevj6.pvp.arena.ArenaManager;
+import me.sevj6.pvp.arena.boiler.Arena;
 import me.sevj6.pvp.command.ClearArenas;
 import me.sevj6.pvp.event.TestListener;
 import me.sevj6.pvp.event.eventposters.ListenerCrystalPlace;
 import me.sevj6.pvp.event.eventposters.ListenerTotemPop;
 import me.sevj6.pvp.event.eventposters.ListenerUse32k;
 import me.sevj6.pvp.kit.KitManager;
+import me.sevj6.pvp.tablist.Tablist8b8t;
 import me.txmc.protocolapi.PacketEventDispatcher;
 import me.txmc.protocolapi.PacketListener;
 import me.txmc.protocolapi.reflection.ClassProcessor;
@@ -54,6 +55,7 @@ public final class PVPServer extends JavaPlugin {
         managers.forEach(m -> m.init(this));
         arenaManager.getArenas().forEach(Arena::loadArenaChunks);
         getCommand("clear").setExecutor(new ClearArenas());
+        new Tablist8b8t(this);
     }
 
     public void addManager(Manager manager) {
