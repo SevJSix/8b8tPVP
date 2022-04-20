@@ -19,15 +19,15 @@ public class Arena extends AbstractArena {
     private final List<Location> locations = getAllLocations(getFirstPosition(), getSecondPosition());
     protected List<Material> invalidMaterials = Arrays.asList(Material.AIR, Material.BEDROCK, Material.DISPENSER);
 
-    protected Arena(String name, World world, int x1, int y1, int z1, int x2, int y2, int z2) {
+    public Arena(String name, World world, int x1, int y1, int z1, int x2, int y2, int z2) {
         super(name, world, x1, y1, z1, x2, y2, z2);
     }
 
-    protected Arena(String name, World world, BlockPosition pos1, BlockPosition pos2) {
+    public Arena(String name, World world, BlockPosition pos1, BlockPosition pos2) {
         this(name, world, pos1.getX(), pos1.getY(), pos1.getZ(), pos2.getX(), pos2.getY(), pos2.getZ());
     }
 
-    protected Arena(String name, Location loc1, Location loc2) {
+    public Arena(String name, Location loc1, Location loc2) {
         this(name, loc1.getWorld(), loc1.getBlockX(), loc1.getBlockY(), loc1.getBlockZ(), loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ());
     }
 
