@@ -24,7 +24,7 @@ TabList:
     - "&r"
   Footer:
     - ""
-    - "&r%tps% &7tps - %ping% ping - %players% players - %uptime% uptime"
+    - "&r%tps% &7tps — %ping% ping — %players% players — %uptime% uptime"
     - "&r"
 
 # Automatically translate chat messages, and tablist text to each players game language
