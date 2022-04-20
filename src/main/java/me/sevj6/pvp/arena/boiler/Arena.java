@@ -27,10 +27,6 @@ public class Arena extends AbstractArena {
         this(name, world, pos1.getX(), pos1.getY(), pos1.getZ(), pos2.getX(), pos2.getY(), pos2.getZ());
     }
 
-    public Arena(String name, Location loc1, Location loc2) {
-        this(name, loc1.getWorld(), loc1.getBlockX(), loc1.getBlockY(), loc1.getBlockZ(), loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ());
-    }
-
     public void loadArenaChunks() {
         locations.forEach(location -> {
             if (!location.getChunk().isLoaded()) location.getChunk().load();
