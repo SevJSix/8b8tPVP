@@ -4,15 +4,13 @@ import lombok.Getter;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+public interface AbstractTablist {
 
-@Getter
-public abstract class AbstractTablist {
+    void sendHeaderAndFooterList();
 
-    public abstract void sendHeaderAndFooterList();
+     String parseText(String text, Player player);
 
-    public abstract String parseText(String text, Player player);
+     List<Player> getOnlinePlayers();
 
-    public abstract List<Player> getOnlinePlayers();
-
-    public abstract int getPlayerPing(Player player);
+     int getPlayerPing(Player player);
 }

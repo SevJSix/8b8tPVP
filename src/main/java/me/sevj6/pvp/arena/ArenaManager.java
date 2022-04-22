@@ -23,10 +23,9 @@ public class ArenaManager extends Manager {
 
     @Override
     public void init(PVPServer plugin) {
-        Arena crystal = new Arena("Crystal", Bukkit.getWorld("world"), new BlockPosition(-50, 50, -50), new BlockPosition(50, 0, 50));
-        Arena dispenser32k = new Arena("Dispenser32k", Bukkit.getWorld("world_nether"), new BlockPosition(-50, 50, -50), new BlockPosition(50, 0, 50));
-        arenas.add(crystal);
-        arenas.add(dispenser32k);
+        arenas.add(new Arena("Dispenser32k", Bukkit.getWorld("world_nether"), new BlockPosition(-50, 50, -50), new BlockPosition(50, 0, 50)));
+        arenas.add(new Arena("Crystal", Bukkit.getWorld("world"), new BlockPosition(-50, 50, -50), new BlockPosition(50, 0, 50)));
+        plugin.getCommand("arenatest").setExecutor(new TestCommand(arenas.get(1)));
     }
 
     @Override

@@ -7,3 +7,4 @@ load: POSTWORLD
 commands:
   clear:
     description: clear all arenas
+  arenatest:

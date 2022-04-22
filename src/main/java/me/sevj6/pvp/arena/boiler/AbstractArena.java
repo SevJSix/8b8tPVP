@@ -15,12 +15,8 @@ public abstract class AbstractArena {
 
     private final String name;
     private final World world;
-    private final int x1;
-    private final int y1;
-    private final int z1;
-    private final int x2;
-    private final int y2;
-    private final int z2;
+    private final int x1, y1, z1;
+    private final int x2, y2, z2;
     private final BlockPosition firstPosition;
     private final BlockPosition secondPosition;
     private final List<Player> activePlayers;

@@ -16,7 +16,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tablist8b8t extends AbstractTablist {
+public class Tablist8b8t implements AbstractTablist {
 
     private final List<String> headerOption = PVPServer.getInstance().getConfig().getStringList("TabList.Header");
     private final List<String> footerOption = PVPServer.getInstance().getConfig().getStringList("TabList.Footer");
