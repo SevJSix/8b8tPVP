@@ -7,7 +7,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -19,7 +18,6 @@ public abstract class AbstractArena {
     private final int x2, y2, z2;
     private final BlockPosition firstPosition;
     private final BlockPosition secondPosition;
-    private final List<Player> activePlayers;
 
     protected AbstractArena(String name, World world, int x1, int y1, int z1, int x2, int y2, int z2) {
         this.name = name;
@@ -32,7 +30,6 @@ public abstract class AbstractArena {
         this.z2 = z2;
         this.firstPosition = new BlockPosition(x1, y1, z1);
         this.secondPosition = new BlockPosition(x2, y2, z2);
-        this.activePlayers = new ArrayList<>();
     }
 
     public abstract void clear();
