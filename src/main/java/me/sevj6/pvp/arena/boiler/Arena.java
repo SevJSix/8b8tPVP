@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class Arena extends AbstractArena {
     }
 
     @Override
-    public  List<Location> getAllLocations(BlockPosition pos1, BlockPosition pos2) {
+    public List<Location> getAllLocations(BlockPosition pos1, BlockPosition pos2) {
         if (getWorld() == null) throw new NullPointerException("World in arena '" + getName() + "' is null!");
         List<Location> locations = new ArrayList<>();
         for (int x = getMinX(); x <= getMaxX(); x++) {
@@ -81,6 +80,14 @@ public class Arena extends AbstractArena {
         Location playerLoc = player.getLocation();
         AxisAlignedBB playerBox = new AxisAlignedBB(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ(), playerLoc.getX(), playerLoc.getY() + 1, playerLoc.getZ());
         AxisAlignedBB arenaBox = new AxisAlignedBB(getFirstPosition(), getSecondPosition());
-        return arenaBox.c(playerBox);
+        return arenaBox.intersects(playerBox);
+    }
+
+    @Override
+    public boolean isPositionInArena(BlockPosition pos) {
+        if (getWorld() == null) throw new NullPointerException("World in arena '" + getName() + "' is null!");
+        AxisAlignedBB posBox = new AxisAlignedBB(pos);
+        AxisAlignedBB arenaBox = new AxisAlignedBB(getFirstPosition(), getSecondPosition());
+        return arenaBox.intersects(posBox);
     }
 }

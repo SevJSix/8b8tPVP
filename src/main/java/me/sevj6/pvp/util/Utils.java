@@ -133,6 +133,13 @@ public class Utils {
         return false;
     }
 
+    public static boolean isPositionInArena(BlockPosition pos) {
+        for (Arena arena : PVPServer.getArenaManager().getArenas()) {
+            if (arena.isPositionInArena(pos)) return true;
+        }
+        return false;
+    }
+
     public static void removeEntities() {
         for (World world : Bukkit.getServer().getWorlds()) {
             for (Chunk chunk : world.getLoadedChunks()) {

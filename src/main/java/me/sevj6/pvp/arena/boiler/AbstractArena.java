@@ -45,6 +45,8 @@ public abstract class AbstractArena {
 
     public abstract boolean isPlayerInArena(Player player);
 
+    public abstract boolean isPositionInArena(BlockPosition pos);
+
     public int getMinX() {
         return Math.min(firstPosition.getX(), secondPosition.getX());
     }

@@ -13,7 +13,7 @@ public class ClearArenas implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String name, String[] args) {
-        Bukkit.getOnlinePlayers().forEach(player -> Utils.sendMessage(player, "&eNow clearing all server arenas. Expect momentary lag"));
+        Bukkit.getOnlinePlayers().stream().filter(player -> !Utils.isPlayerInArena(player)).forEach(player -> Utils.sendMessage(player, "&eNow clearing all server arenas."));
         for (Arena arena : PVPServer.getArenaManager().getArenas()) {
             for (Player activePlayer : arena.getActivePlayers()) {
                 Utils.sendMessage(activePlayer, "&cYour current arena (" + arena.getName() + ") is being cleared!");

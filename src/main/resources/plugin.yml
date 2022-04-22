@@ -8,3 +8,7 @@ commands:
   clear:
     description: clear all arenas
   arenatest:
+  arenalist:
+  arenacreate:
+  arenaremove:
+  wand:
