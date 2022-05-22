@@ -3,21 +3,22 @@ package me.sevj6.pvp.arena.boiler;
 import me.sevj6.pvp.util.Utils;
 import net.minecraft.server.v1_12_R1.AxisAlignedBB;
 import net.minecraft.server.v1_12_R1.BlockPosition;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Arena extends AbstractArena {
+public class Arena extends AbstractArena implements Serializable {
 
     protected List<Material> invalidMaterials = Arrays.asList(Material.AIR, Material.BEDROCK);
+    protected List<EntityType> whitelistedEntities = Arrays.asList(EntityType.ITEM_FRAME, EntityType.PLAYER, EntityType.ARMOR_STAND);
 
     public Arena(String name, World world, int x1, int y1, int z1, int x2, int y2, int z2) {
         super(name, world, x1, y1, z1, x2, y2, z2);
@@ -39,6 +40,7 @@ public class Arena extends AbstractArena {
         findAllBlocks(getAllLocations(getFirstPosition(), getSecondPosition())).forEach(block -> {
             block.setType(Material.AIR);
         });
+        getAllEntities().stream().filter(entity -> !whitelistedEntities.contains(entity.getType())).forEach(Entity::remove);
         long finish = (System.currentTimeMillis() - start);
         Bukkit.getOnlinePlayers().stream().filter(this::isPlayerInArena).forEach(p -> Utils.sendMessage(p, String.format("&aFinished clearing your current arena in&r&3 %dms&r", finish)));
     }
@@ -50,6 +52,23 @@ public class Arena extends AbstractArena {
             if (isPlayerInArena(onlinePlayer)) players.add(onlinePlayer);
         }
         return players;
+    }
+
+    @Override
+    public List<Entity> getAllEntities() {
+        if (getWorld() == null) throw new NullPointerException("World in arena '" + getName() + "' is null!");
+        List<Entity> entities = new ArrayList<>();
+        for (Chunk loadedChunk : getWorld().getLoadedChunks()) {
+            for (Entity entity : loadedChunk.getEntities()) {
+                Location entityLocation = entity.getLocation();
+                AxisAlignedBB entityBox = new AxisAlignedBB(new BlockPosition(entityLocation.getX(), entityLocation.getY(), entityLocation.getZ()));
+                AxisAlignedBB arenaBox = new AxisAlignedBB(getFirstPosition(), getSecondPosition());
+                if (arenaBox.intersects(entityBox)) {
+                    entities.add(entity);
+                }
+            }
+        }
+        return entities;
     }
 
     @Override

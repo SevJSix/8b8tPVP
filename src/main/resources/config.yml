@@ -8,6 +8,31 @@ SpawnPoints:
     y: 100
     z: 0.5
 
+Command:
+  DeniedMsg: "&cThis command is not available in this area"
+  OpBypass: true
+  ArenaAllowed:
+    - "kill"
+    - "msg"
+    - "r"
+    - "l"
+    - "tps"
+    - "help"
+    - "tell"
+    - "w"
+    - "discord"
+    - "ping"
+  # EverywhereAllowed inherits from ArenaAllowed
+  EverywhereAllowed:
+    - "kitcreator"
+    - "spawn"
+    - "hub"
+    - "rename"
+    - "createukit"
+    - "deleteukit"
+    - "renameukit"
+    - "ci"
+
 # Teleport players to a random location inside each separate arena from the main arena
 ArenaManager:
   Dispenser32k:

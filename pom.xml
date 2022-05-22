@@ -55,7 +55,8 @@
 
     <repositories>
         <repository>
-            <id>txmc-repo</id>
+            <id>reposilite-repository-releases</id>
+            <name>TXMC Repository</name>
             <url>https://repo.txmc.me/releases</url>
         </repository>
         <repository>
@@ -74,7 +75,13 @@
         <dependency>
             <groupId>me.txmc</groupId>
             <artifactId>protocolapi</artifactId>
-            <version>1.0-SNAPSHOT_1.12.2</version>
+            <version>1.2-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.txmc</groupId>
+            <artifactId>rtmixin</artifactId>
+            <version>1.3-BETA</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

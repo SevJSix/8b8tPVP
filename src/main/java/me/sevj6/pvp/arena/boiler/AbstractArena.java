@@ -5,6 +5,7 @@ import net.minecraft.server.v1_12_R1.BlockPosition;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -35,6 +36,8 @@ public abstract class AbstractArena {
     public abstract void clear();
 
     public abstract List<Player> getActivePlayers();
+
+    public abstract List<Entity> getAllEntities();
 
     public abstract List<Location> getAllLocations(BlockPosition pos1, BlockPosition pos2);
 

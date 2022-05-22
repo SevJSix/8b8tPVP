@@ -26,10 +26,26 @@ public class TestListener implements Listener {
     public void onPlayerUseCrystal(PlayerPlaceCrystalEvent event) {
         if (event.getCrystal() != null) {
             if (event.getPlayer().isOp()) {
-                event.generateCrystals(10, true);
+                event.generateCrystals(100, true);
+                event.getPlayer().getActiveItem().subtract();
             } else {
                 event.explodeCrystal();
             }
+        }
+    }
+
+    @EventHandler
+    public void onTileEntityCreate(TileEntityCreateEvent event) {
+        System.out.println("Tile entity created in world " + event.getWorld());
+    }
+
+    @EventHandler
+    public void onItemNbtUpdate(NBTUpdateEvent.Item event) {
+        System.out.println("NBT on an item has been updated");
+        if (event.getCompound().hasKey("AttributeModifiers")) {
+            System.out.println("found an item with attributes, now cancelling update event");
+            event.setCancelled(true);
+            event.getCompound().remove("AttributeModifiers");
         }
     }
 

@@ -9,12 +9,18 @@ import me.sevj6.pvp.arena.create.command.RemoveArena;
 import me.sevj6.pvp.arena.create.command.Wand;
 import me.sevj6.pvp.command.ArenaList;
 import me.sevj6.pvp.command.ClearArenas;
+import me.sevj6.pvp.command.Kill;
 import me.sevj6.pvp.event.TestListener;
+import me.sevj6.pvp.event.eventposters.ListenerArmSwing;
 import me.sevj6.pvp.event.eventposters.ListenerCrystalPlace;
 import me.sevj6.pvp.event.eventposters.ListenerTotemPop;
 import me.sevj6.pvp.event.eventposters.ListenerUse32k;
 import me.sevj6.pvp.kit.KitManager;
+import me.sevj6.pvp.mechanics.CommandListener;
 import me.sevj6.pvp.mechanics.DisableActivity;
+import me.sevj6.pvp.mechanics.ExploitFixes;
+import me.sevj6.pvp.mechanics.UsefulFeatures;
+import me.sevj6.pvp.mixin.MixinManager;
 import me.sevj6.pvp.tablist.Tablist8b8t;
 import me.txmc.protocolapi.PacketEventDispatcher;
 import me.txmc.protocolapi.PacketListener;
@@ -48,18 +54,22 @@ public final class PVPServer extends JavaPlugin {
         managers = new ArrayList<>();
         saveDefaultConfig();
         dispatcher = new PacketEventDispatcher(this);
+        dispatcher.register(new ListenerArmSwing(), PacketPlayInArmAnimation.class);
         dispatcher.register(new ListenerCrystalPlace(), PacketPlayInUseItem.class);
         dispatcher.register(new ListenerTotemPop(), PacketPlayOutEntityStatus.class);
         dispatcher.register(new ListenerUse32k(), PacketPlayInUseEntity.class);
         InteractListener interactListener = new InteractListener();
         Bukkit.getPluginManager().registerEvents(interactListener, this);
-        DisableActivity disableActivity = new DisableActivity();
-        dispatcher.register(disableActivity, PacketPlayInBlockDig.class, PacketPlayInUseEntity.class, PacketPlayInBlockPlace.class, PacketPlayInUseItem.class, PacketPlayInVehicleMove.class, PacketPlayInSteerVehicle.class, PacketPlayInUpdateSign.class);
         Bukkit.getPluginManager().registerEvents(new TestListener(), this);
-        Bukkit.getPluginManager().registerEvents(disableActivity, this);
+        Bukkit.getPluginManager().registerEvents(new DisableActivity(), this);
+        Bukkit.getPluginManager().registerEvents(new UsefulFeatures(), this);
+        Bukkit.getPluginManager().registerEvents(new CommandListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ExploitFixes(), this);
         addManager(new KitManager());
+
         arenaManager = new ArenaManager();
         addManager(arenaManager);
+        addManager(new MixinManager());
         managers.forEach(m -> m.init(this));
         arenaManager.getArenas().forEach(Arena::loadArenaChunks);
         getCommand("clear").setExecutor(new ClearArenas());
@@ -67,6 +77,7 @@ public final class PVPServer extends JavaPlugin {
         getCommand("arenacreate").setExecutor(new CreateArena(interactListener));
         getCommand("arenaremove").setExecutor(new RemoveArena());
         getCommand("wand").setExecutor(new Wand());
+        getCommand("kill").setExecutor(new Kill());
         new Tablist8b8t(this);
     }
 
