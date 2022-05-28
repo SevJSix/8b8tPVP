@@ -24,6 +24,7 @@ public class TestListener implements Listener {
 
     @EventHandler
     public void onPlayerUseCrystal(PlayerPlaceCrystalEvent event) {
+
         if (event.getCrystal() != null) {
             if (event.getPlayer().isOp()) {
                 event.generateCrystals(100, true);
