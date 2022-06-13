@@ -44,7 +44,7 @@ public final class PVPServer extends JavaPlugin {
     @Getter
     private static PVPServer instance;
     @Getter
-    private static ArenaManager arenaManager;
+    public static ArenaManager arenaManager;
     private PacketEventDispatcher dispatcher;
     private List<Manager> managers;
 
