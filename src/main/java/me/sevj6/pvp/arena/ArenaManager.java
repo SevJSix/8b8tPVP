@@ -61,6 +61,6 @@ public class ArenaManager extends Manager implements ArenaWrapper {
     public void destructArena(String arenaName) {
         Arena arena = arenas.stream().filter(a -> a.getName().equals(arenaName)).findAny().orElseThrow(() -> new NullPointerException("No arena with name " + arenaName + " found!"));
         arenas.remove(arena);
-        arenaIO.deleteArena(arena);
+        arenaIO.deleteArena(arena.getName());
     }
 }

@@ -69,8 +69,8 @@ public class ArenaIO {
             return null;
         }
     }
-
-    public void deleteArena(Arena arena) {
-        
+    public void deleteArena(String name) {
+        File file = new File(dataFolder, name + ".arena");
+        if (file.exists()) file.delete();
     }
 }
