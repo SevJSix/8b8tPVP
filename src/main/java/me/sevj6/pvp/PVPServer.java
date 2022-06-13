@@ -20,7 +20,6 @@ import me.sevj6.pvp.mechanics.CommandListener;
 import me.sevj6.pvp.mechanics.DisableActivity;
 import me.sevj6.pvp.mechanics.ExploitFixes;
 import me.sevj6.pvp.mechanics.UsefulFeatures;
-import me.sevj6.pvp.mixin.MixinManager;
 import me.sevj6.pvp.tablist.Tablist8b8t;
 import me.txmc.protocolapi.PacketEventDispatcher;
 import me.txmc.protocolapi.PacketListener;
@@ -42,9 +41,9 @@ public final class PVPServer extends JavaPlugin {
 
     public static final long START_TIME = System.currentTimeMillis();
     @Getter
-    private static PVPServer instance;
-    @Getter
     public static ArenaManager arenaManager;
+    @Getter
+    private static PVPServer instance;
     private PacketEventDispatcher dispatcher;
     private List<Manager> managers;
 
@@ -69,7 +68,6 @@ public final class PVPServer extends JavaPlugin {
 
         arenaManager = new ArenaManager();
         addManager(arenaManager);
-        addManager(new MixinManager());
         managers.forEach(m -> m.init(this));
         arenaManager.getArenas().forEach(Arena::loadArenaChunks);
         getCommand("clear").setExecutor(new ClearArenas());
