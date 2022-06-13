@@ -55,7 +55,7 @@ public class ArenaIO {
     private Arena parseArena(File file) {
         try {
             String name = file.getName().split("\\.")[0];
-            FileInputStream fis = new FileInputStream(name);
+            FileInputStream fis = new FileInputStream(file);
             DataInputStream in = new DataInputStream(fis);
             Arena arena = new Arena(name, Bukkit.getWorld(in.readUTF()),
                     new BlockPosition(in.readInt(), in.readInt(), in.readInt()),
@@ -69,14 +69,9 @@ public class ArenaIO {
             return null;
         }
     }
+
     public void deleteArena(String name) {
         File file = new File(dataFolder, name + ".arena");
         if (file.exists()) file.delete();
-    }
-    //A method to delete all arenas
-    public void deleteAllArenas() {
-        for (File file : Objects.requireNonNull(dataFolder.listFiles())) {
-            file.delete();
-        }
     }
 }

@@ -8,7 +8,6 @@ import me.sevj6.pvp.arena.boiler.ArenaIO;
 import me.sevj6.pvp.arena.boiler.ArenaWrapper;
 import me.sevj6.pvp.util.Utils;
 import net.minecraft.server.v1_12_R1.BlockPosition;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -17,13 +16,11 @@ import java.util.List;
 public class ArenaManager extends Manager implements ArenaWrapper {
 
     @Getter
-    private final List<Arena> arenas;
-    private final ArenaIO arenaIO;
+    private List<Arena> arenas;
+    private ArenaIO arenaIO;
 
     public ArenaManager() {
         super("ArenaManager");
-        arenaIO = new ArenaIO();
-        arenas = arenaIO.readAllArenas();
     }
 
     public Arena getArenaByName(String name) {
@@ -32,8 +29,8 @@ public class ArenaManager extends Manager implements ArenaWrapper {
 
     @Override
     public void init(PVPServer plugin) {
-        arenas.add(new Arena("Dispenser32k", Bukkit.getWorld("world_nether"), new BlockPosition(-50, 50, -50), new BlockPosition(50, 0, 50)));
-        arenas.add(new Arena("Crystal", Bukkit.getWorld("world"), new BlockPosition(-50, 50, -50), new BlockPosition(50, 0, 50)));
+        arenaIO = new ArenaIO();
+        arenas = arenaIO.readAllArenas();
         plugin.getCommand("arenatest").setExecutor(new TestCommand(arenas.get(1)));
     }
 
