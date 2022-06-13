@@ -87,7 +87,7 @@ public final class PVPServer extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        managers.forEach(m -> m.destruct(this));
     }
 
     public void registerListener(Listener listener) {
