@@ -27,7 +27,6 @@ public class KitManager extends Manager {
     public void init(PVPServer plugin) {
         kits = new ArrayList<>();
         managerDataFolder = super.getDataFolder();
-        plugin.registerCommand("kst", new KitSaveTest(this));
     }
 
     @Override
