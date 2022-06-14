@@ -69,14 +69,9 @@ public class ArenaIO {
             return null;
         }
     }
+
     public void deleteArena(String name) {
         File file = new File(dataFolder, name + ".arena");
         if (file.exists()) file.delete();
-    }
-    //A method to delete all arenas
-    public void deleteAllArenas() {
-        for (File file : Objects.requireNonNull(dataFolder.listFiles())) {
-            file.delete();
-        }
     }
 }

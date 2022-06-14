@@ -3,12 +3,7 @@ package me.sevj6.pvp;
 import lombok.Getter;
 import me.sevj6.pvp.arena.ArenaManager;
 import me.sevj6.pvp.arena.boiler.Arena;
-import me.sevj6.pvp.arena.create.InteractListener;
-import me.sevj6.pvp.arena.create.command.CreateArena;
-import me.sevj6.pvp.arena.create.command.RemoveArena;
 import me.sevj6.pvp.arena.create.command.Wand;
-import me.sevj6.pvp.command.ArenaList;
-import me.sevj6.pvp.command.ClearArenas;
 import me.sevj6.pvp.command.Kill;
 import me.sevj6.pvp.event.TestListener;
 import me.sevj6.pvp.event.eventposters.ListenerArmSwing;
@@ -57,8 +52,6 @@ public final class PVPServer extends JavaPlugin {
         dispatcher.register(new ListenerCrystalPlace(), PacketPlayInUseItem.class);
         dispatcher.register(new ListenerTotemPop(), PacketPlayOutEntityStatus.class);
         dispatcher.register(new ListenerUse32k(), PacketPlayInUseEntity.class);
-        InteractListener interactListener = new InteractListener();
-        Bukkit.getPluginManager().registerEvents(interactListener, this);
         Bukkit.getPluginManager().registerEvents(new TestListener(), this);
         Bukkit.getPluginManager().registerEvents(new DisableActivity(), this);
         Bukkit.getPluginManager().registerEvents(new UsefulFeatures(), this);
@@ -70,10 +63,7 @@ public final class PVPServer extends JavaPlugin {
         addManager(arenaManager);
         managers.forEach(m -> m.init(this));
         arenaManager.getArenas().forEach(Arena::loadArenaChunks);
-        getCommand("clear").setExecutor(new ClearArenas());
-        getCommand("arenalist").setExecutor(new ArenaList());
-        getCommand("arenacreate").setExecutor(new CreateArena(interactListener));
-        getCommand("arenaremove").setExecutor(new RemoveArena());
+
         getCommand("wand").setExecutor(new Wand());
         getCommand("kill").setExecutor(new Kill());
         new Tablist8b8t(this);

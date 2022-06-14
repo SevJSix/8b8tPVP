@@ -6,6 +6,11 @@ import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.arena.boiler.Arena;
 import me.sevj6.pvp.arena.boiler.ArenaIO;
 import me.sevj6.pvp.arena.boiler.ArenaWrapper;
+import me.sevj6.pvp.arena.create.InteractListener;
+import me.sevj6.pvp.arena.create.command.CreateArena;
+import me.sevj6.pvp.arena.create.command.RemoveArena;
+import me.sevj6.pvp.command.ArenaList;
+import me.sevj6.pvp.command.ClearArenas;
 import me.sevj6.pvp.util.Utils;
 import net.minecraft.server.v1_12_R1.BlockPosition;
 import org.bukkit.Bukkit;
@@ -17,13 +22,11 @@ import java.util.List;
 public class ArenaManager extends Manager implements ArenaWrapper {
 
     @Getter
-    private final List<Arena> arenas;
-    private final ArenaIO arenaIO;
+    private List<Arena> arenas;
+    private ArenaIO arenaIO;
 
     public ArenaManager() {
         super("ArenaManager");
-        arenaIO = new ArenaIO();
-        arenas = arenaIO.readAllArenas();
     }
 
     public Arena getArenaByName(String name) {
@@ -32,9 +35,14 @@ public class ArenaManager extends Manager implements ArenaWrapper {
 
     @Override
     public void init(PVPServer plugin) {
-        arenas.add(new Arena("Dispenser32k", Bukkit.getWorld("world_nether"), new BlockPosition(-50, 50, -50), new BlockPosition(50, 0, 50)));
-        arenas.add(new Arena("Crystal", Bukkit.getWorld("world"), new BlockPosition(-50, 50, -50), new BlockPosition(50, 0, 50)));
-        plugin.getCommand("arenatest").setExecutor(new TestCommand(arenas.get(1)));
+        arenaIO = new ArenaIO();
+        arenas = arenaIO.readAllArenas();
+        InteractListener interactListener = new InteractListener();
+        Bukkit.getPluginManager().registerEvents(interactListener, plugin);
+        plugin.getCommand("clear").setExecutor(new ClearArenas());
+        plugin.getCommand("arenalist").setExecutor(new ArenaList());
+        plugin.getCommand("arenacreate").setExecutor(new CreateArena(interactListener));
+        plugin.getCommand("arenaremove").setExecutor(new RemoveArena());
     }
 
     @Override
