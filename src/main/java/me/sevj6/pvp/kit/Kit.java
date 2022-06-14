@@ -1,20 +1,15 @@
 package me.sevj6.pvp.kit;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import me.txmc.protocolapi.reflection.ClassProcessor;
-import me.txmc.protocolapi.reflection.GetMethod;
-import net.minecraft.server.v1_12_R1.Item;
+import me.sevj6.pvp.PVPServer;
+import me.sevj6.pvp.kit.util.KitIO;
+import net.minecraft.server.v1_12_R1.EntityPlayer;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import net.minecraft.server.v1_12_R1.NBTTagList;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.lang.reflect.Method;
 import java.util.UUID;
 
 /**
@@ -22,60 +17,60 @@ import java.util.UUID;
  * @since 4/12/22/ 11:50 PM
  * This file was created as a part of 8b8tPVP
  */
-@RequiredArgsConstructor
 @Getter
+//TODO make this not chinese
 public class Kit {
     private final UUID owner;
-    private final PlayerInventory inventory;
+    private NBTTagList kitItems;
     private final String name;
-    @GetMethod(clazz = NBTTagCompound.class, name = "write", sig = DataOutput.class)
-    private Method writeM;
+    private final KitType type;
+
+    public Kit(Player owner, String name, KitType type) {
+        this(owner.getUniqueId(), name, type);
+        if (!owner.isOnline()) throw new IllegalArgumentException("Player is not online");
+        kitItems = ((CraftPlayer) owner).getHandle().inventory.a(new NBTTagList());
+    }
+
+    public Kit(UUID owner, String name, KitType type) {
+        this.owner = owner;
+        this.name = name;
+        this.type = type;
+        try {
+            NBTTagCompound kitData = KitIO.loadKitData(owner, name, type);
+            if (kitData == null) throw new IllegalArgumentException("Kit does not exist");
+            kitItems = KitIO.loadKitData(owner, name, type).getList("InvContents", 10);
+        } catch (Throwable t) {
+            PVPServer.getInstance().getLogger().warning("Failed to load kit " + name + " for " + owner.toString());
+            t.printStackTrace();
+        }
+    }
+
+    public Player getOwnerAsPlayer() {
+        return Bukkit.getPlayer(owner);
+    }
+
+    //Set the owners inventory to the kit's contents
+    public void setOwnerLoadOut() {
+        Player player = getOwnerAsPlayer();
+        if (player == null || !player.isOnline()) return;
+        setLoadOut(player);
+    }
+
+    public void setLoadOut(Player player) {
+        if (player == null || !player.isOnline()) return;
+        EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        nmsPlayer.inventory.b(getKitItems());
+    }
 
     public void save() {
         try {
-            File playerFolder = new File(KitManager.getManagerDataFolder(), owner.toString());
-            if (!playerFolder.exists()) playerFolder.mkdirs();
-            File kitFile = new File(playerFolder, String.format("%s.kit", name));
-            FileOutputStream fos = new FileOutputStream(kitFile);
-            DataOutputStream out = new DataOutputStream(fos);
-            out.writeUTF(owner.toString());
-            out.writeUTF(name);
-            writeItemStack(out, inventory.getItemInMainHand());
-            out.flush();
-        } catch (Throwable e) {
-            e.printStackTrace();
+            KitIO.saveKitData(this);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
     }
 
-    private void writeItemStack(DataOutputStream out, ItemStack bItem) throws Throwable {
-        net.minecraft.server.v1_12_R1.ItemStack itemStack = CraftItemStack.asNMSCopy(bItem);
-        if (!itemStack.isEmpty() && itemStack.getItem() != null) {
-            out.writeShort(Item.getId(itemStack.getItem()));
-            out.writeByte(itemStack.getCount());
-            out.writeShort(itemStack.getData());
-            NBTTagCompound tag = null;
-            if (itemStack.getItem().usesDurability() || itemStack.getItem().p()) {
-                itemStack = itemStack.cloneItemStack();
-                CraftItemStack.setItemMeta(itemStack, CraftItemStack.getItemMeta(itemStack));
-                tag = itemStack.getTag();
-            }
-
-            writeNBTTagCompound(tag, out);
-        } else {
-            out.writeShort(-1);
-        }
-    }
-
-    private void writeNBTTagCompound(NBTTagCompound tag, DataOutputStream dos) throws Throwable {
-        if (writeM == null) ClassProcessor.process(this);
-        if (tag == null) {
-            dos.writeByte(0);
-            return;
-        }
-        dos.writeByte(tag.getTypeId());
-        if (tag.getTypeId() != 0) {
-            dos.writeUTF("");
-            writeM.invoke(tag, dos);
-        }
+    public enum KitType {
+        GLOBAL, USER
     }
 }
