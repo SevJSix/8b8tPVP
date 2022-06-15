@@ -5,21 +5,19 @@ import me.sevj6.pvp.Manager;
 import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.arena.boiler.Arena;
 import me.sevj6.pvp.arena.boiler.ArenaIO;
-import me.sevj6.pvp.arena.boiler.ArenaWrapper;
-import me.sevj6.pvp.arena.create.InteractListener;
-import me.sevj6.pvp.arena.create.command.CreateArena;
-import me.sevj6.pvp.arena.create.command.RemoveArena;
+import me.sevj6.pvp.arena.boiler.IArena;
+import me.sevj6.pvp.arena.command.CreateArena;
+import me.sevj6.pvp.arena.command.RemoveArena;
 import me.sevj6.pvp.command.ArenaList;
 import me.sevj6.pvp.command.ClearArenas;
 import me.sevj6.pvp.util.Utils;
 import net.minecraft.server.v1_12_R1.BlockPosition;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
 
-public class ArenaManager extends Manager implements ArenaWrapper {
+public class ArenaManager extends Manager implements IArena {
 
     @Getter
     private List<Arena> arenas;
@@ -37,11 +35,9 @@ public class ArenaManager extends Manager implements ArenaWrapper {
     public void init(PVPServer plugin) {
         arenaIO = new ArenaIO();
         arenas = arenaIO.readAllArenas();
-        InteractListener interactListener = new InteractListener();
-        Bukkit.getPluginManager().registerEvents(interactListener, plugin);
         plugin.getCommand("clear").setExecutor(new ClearArenas());
         plugin.getCommand("arenalist").setExecutor(new ArenaList());
-        plugin.getCommand("arenacreate").setExecutor(new CreateArena(interactListener));
+        plugin.getCommand("arenacreate").setExecutor(new CreateArena(plugin.getInteractListener()));
         plugin.getCommand("arenaremove").setExecutor(new RemoveArena());
     }
 

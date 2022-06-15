@@ -1,4 +1,4 @@
-package me.sevj6.pvp.arena.create.command;
+package me.sevj6.pvp.arena.command;
 
 import me.sevj6.pvp.util.Utils;
 import org.bukkit.ChatColor;
@@ -28,7 +28,7 @@ public class Wand implements CommandExecutor {
             goldAxeMeta.setLocalizedName(ChatColor.RED + "Position 2 Setter");
             goldAxe.setItemMeta(goldAxeMeta);
             player.getInventory().addItem(ironAxe, goldAxe);
-            Utils.sendMessage(player, "&aGave you some wands to select an arena");
+            Utils.sendMessage(player, "&aGave you some wands to select a position");
         }
         return true;
     }

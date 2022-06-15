@@ -1,4 +1,4 @@
-package me.sevj6.pvp.arena.create;
+package me.sevj6.pvp.mechanics;
 
 import lombok.Getter;
 import lombok.Setter;

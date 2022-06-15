@@ -13,3 +13,5 @@ commands:
   arenaremove:
   wand:
   kill:
+  createportal:
+  removeportal:

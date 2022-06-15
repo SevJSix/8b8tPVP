@@ -3,10 +3,12 @@ package me.sevj6.pvp.util;
 import me.sevj6.pvp.Manager;
 import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.arena.boiler.Arena;
+import me.sevj6.pvp.portals.boiler.Portal;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -104,6 +106,13 @@ public class Utils {
         double z = location.getZ();
         World world = location.getWorld();
         return "&3world&r&a " + world.getName() + " &r&3X:&r&a " + format.format(x) + " &r&3Y:&r&a " + format.format(y) + " &r&3Z:&r&a " + format.format(z);
+    }
+
+    public static boolean isPlayerInPortal(Player player, Portal portal) {
+        if (player.getWorld() != portal.getWorld()) return false;
+        EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
+        AxisAlignedBB playerBox = new AxisAlignedBB(new BlockPosition(entityPlayer.getX(), entityPlayer.getY(), entityPlayer.getZ()));
+        return playerBox.intersects(portal.getBoundingBox());
     }
 
     public static ItemStack shallowReadItemStack(PacketDataSerializer buf) {

@@ -1,4 +1,4 @@
-package me.sevj6.pvp.arena.create.command;
+package me.sevj6.pvp.arena.command;
 
 import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.util.Utils;
