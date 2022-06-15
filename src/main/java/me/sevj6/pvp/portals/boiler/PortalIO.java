@@ -34,7 +34,7 @@ public class PortalIO {
 
     public void savePortal(Portal... portals) throws Throwable {
         for (Portal portal : portals) {
-            File file = new File(dataFolder, portal.getName() + ".arena");
+            File file = new File(dataFolder, portal.getName() + ".portal");
             if (!file.exists()) file.createNewFile();
             FileOutputStream fos = new FileOutputStream(file);
             DataOutputStream out = new DataOutputStream(fos);

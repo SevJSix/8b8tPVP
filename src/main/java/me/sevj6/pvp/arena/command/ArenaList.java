@@ -1,4 +1,4 @@
-package me.sevj6.pvp.command;
+package me.sevj6.pvp.arena.command;
 
 import me.sevj6.pvp.PVPServer;
 import org.bukkit.ChatColor;

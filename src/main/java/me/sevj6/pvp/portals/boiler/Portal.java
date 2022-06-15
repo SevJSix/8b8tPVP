@@ -30,9 +30,7 @@ public class Portal implements IPortal {
     @Override
     public void onPortalEnter(Arena arena, Player player) {
         World world = arena.getWorld();
-        int xRange = (arena.getMinX() / 2) + (arena.getMaxX() / 2);
-        int zRange = (arena.getMinZ() / 2) + (arena.getMaxZ() / 2);
-        randomlySpawnPlayer(player, world, xRange, zRange);
+        randomlySpawnPlayer(player, world, 25, 25);
     }
 
     @Override

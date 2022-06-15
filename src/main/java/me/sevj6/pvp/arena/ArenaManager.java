@@ -6,14 +6,16 @@ import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.arena.boiler.Arena;
 import me.sevj6.pvp.arena.boiler.ArenaIO;
 import me.sevj6.pvp.arena.boiler.IArena;
+import me.sevj6.pvp.arena.command.ArenaList;
+import me.sevj6.pvp.arena.command.ClearArenas;
 import me.sevj6.pvp.arena.command.CreateArena;
 import me.sevj6.pvp.arena.command.RemoveArena;
-import me.sevj6.pvp.command.ArenaList;
-import me.sevj6.pvp.command.ClearArenas;
 import me.sevj6.pvp.util.Utils;
 import net.minecraft.server.v1_12_R1.BlockPosition;
+import net.minecraft.server.v1_12_R1.Blocks;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 
 import java.util.List;
 
@@ -58,7 +60,16 @@ public class ArenaManager extends Manager implements IArena {
 
     @Override
     public void constructArena(String arenaName, World world, BlockPosition pos1, BlockPosition pos2) {
-        arenas.add(new Arena(arenaName, world, pos1, pos2));
+        try {
+            Arena arena = new Arena(arenaName, world, pos1, pos2);
+            arenas.add(arena);
+            arenaIO.saveArena(arena);
+            net.minecraft.server.v1_12_R1.World worldHandle = ((CraftWorld) world).getHandle();
+            worldHandle.setTypeUpdate(pos1, Blocks.REDSTONE_BLOCK.getBlockData());
+            worldHandle.setTypeUpdate(pos2, Blocks.LAPIS_BLOCK.getBlockData());
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
     @Override

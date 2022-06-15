@@ -8,7 +8,6 @@ import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -110,9 +109,9 @@ public class Utils {
 
     public static boolean isPlayerInPortal(Player player, Portal portal) {
         if (player.getWorld() != portal.getWorld()) return false;
-        EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
-        AxisAlignedBB playerBox = new AxisAlignedBB(new BlockPosition(entityPlayer.getX(), entityPlayer.getY(), entityPlayer.getZ()));
-        return playerBox.intersects(portal.getBoundingBox());
+        Location playerLoc = player.getLocation();
+        AxisAlignedBB playerBox = new AxisAlignedBB(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ(), playerLoc.getX(), playerLoc.getY() + 1, playerLoc.getZ());
+        return portal.getBoundingBox().intersects(playerBox);
     }
 
     public static ItemStack shallowReadItemStack(PacketDataSerializer buf) {
