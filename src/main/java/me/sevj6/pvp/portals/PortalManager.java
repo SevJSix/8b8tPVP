@@ -62,7 +62,7 @@ public class PortalManager extends Manager {
     }
 
     public void removePortal(String portalName) {
-        Portal portal = portals.stream().filter(p -> p.getName().equals(portalName)).findAny().orElseThrow(() -> new NullPointerException("No arena with name " + portalName + " found!"));
+        Portal portal = portals.stream().filter(p -> p.getName().equals(portalName)).findAny().orElseThrow(() -> new NullPointerException("No portal with name " + portalName + " found!"));
         portals.remove(portal);
         portalIO.deletePortal(portal.getName());
     }
