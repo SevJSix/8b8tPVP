@@ -1,8 +1,8 @@
-package me.sevj6.pvp.arena.command;
+package me.sevj6.pvp.command.commands.admin;
 
 import lombok.AllArgsConstructor;
 import me.sevj6.pvp.PVPServer;
-import me.sevj6.pvp.mechanics.InteractListener;
+import me.sevj6.pvp.listener.listeners.InteractListener;
 import me.sevj6.pvp.util.Utils;
 import org.bukkit.World;
 import org.bukkit.command.Command;

@@ -2,23 +2,17 @@ package me.sevj6.pvp;
 
 import lombok.Getter;
 import me.sevj6.pvp.arena.ArenaManager;
-import me.sevj6.pvp.arena.boiler.Arena;
-import me.sevj6.pvp.arena.command.Wand;
-import me.sevj6.pvp.command.Kill;
-import me.sevj6.pvp.event.TestListener;
-import me.sevj6.pvp.event.eventposters.ListenerArmSwing;
-import me.sevj6.pvp.event.eventposters.ListenerCrystalPlace;
-import me.sevj6.pvp.event.eventposters.ListenerTotemPop;
-import me.sevj6.pvp.event.eventposters.ListenerUse32k;
+import me.sevj6.pvp.command.GeneralCommandManager;
 import me.sevj6.pvp.kit.KitManager;
-import me.sevj6.pvp.mechanics.*;
+import me.sevj6.pvp.listener.GeneralListenerManager;
+import me.sevj6.pvp.listener.listeners.InteractListener;
 import me.sevj6.pvp.portals.PortalManager;
-import me.sevj6.pvp.tablist.Tablist8b8t;
 import me.txmc.protocolapi.PacketEventDispatcher;
 import me.txmc.protocolapi.PacketListener;
 import me.txmc.protocolapi.reflection.ClassProcessor;
-import net.minecraft.server.v1_12_R1.*;
+import net.minecraft.server.v1_12_R1.Packet;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -40,38 +34,43 @@ public final class PVPServer extends JavaPlugin {
     @Getter
     private static PVPServer instance;
 
-    @Getter
     private InteractListener interactListener;
-
     private PacketEventDispatcher dispatcher;
     private List<Manager> managers;
+    private Location spawn;
+    private Location kitCreator;
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
         instance = this;
         managers = new ArrayList<>();
-        saveDefaultConfig();
         dispatcher = new PacketEventDispatcher(this);
-        dispatcher.register(new ListenerArmSwing(), PacketPlayInArmAnimation.class);
-        dispatcher.register(new ListenerCrystalPlace(), PacketPlayInUseItem.class);
-        dispatcher.register(new ListenerTotemPop(), PacketPlayOutEntityStatus.class);
-        dispatcher.register(new ListenerUse32k(), PacketPlayInUseEntity.class);
         interactListener = new InteractListener();
-        Bukkit.getPluginManager().registerEvents(interactListener, this);
-        Bukkit.getPluginManager().registerEvents(new TestListener(), this);
-        Bukkit.getPluginManager().registerEvents(new DisableActivity(), this);
-        Bukkit.getPluginManager().registerEvents(new UsefulFeatures(), this);
-        Bukkit.getPluginManager().registerEvents(new CommandListener(), this);
-        Bukkit.getPluginManager().registerEvents(new ExploitFixes(), this);
-        addManager(new KitManager());
         arenaManager = new ArenaManager();
         addManager(arenaManager);
+        addManager(new KitManager());
         addManager(new PortalManager());
+        addManager(new GeneralListenerManager());
+        addManager(new GeneralCommandManager());
         managers.forEach(m -> m.init(this));
-        arenaManager.getArenas().forEach(Arena::loadArenaChunks);
-        getCommand("wand").setExecutor(new Wand());
-        getCommand("kill").setExecutor(new Kill());
-        new Tablist8b8t(this);
+
+        kitCreator = new Location(
+                Bukkit.getWorld(PVPServer.getInstance().getConfig().getString("KitCreator.world")),
+                PVPServer.getInstance().getConfig().getDouble("KitCreator.x"),
+                PVPServer.getInstance().getConfig().getDouble("KitCreator.y"),
+                PVPServer.getInstance().getConfig().getDouble("KitCreator.z"),
+                (float) PVPServer.getInstance().getConfig().getDouble("KitCreator.yaw"),
+                (float) PVPServer.getInstance().getConfig().getDouble("KitCreator.pitch")
+        );
+        spawn = new Location(
+                Bukkit.getWorld(PVPServer.getInstance().getConfig().getString("Hub.world")),
+                PVPServer.getInstance().getConfig().getDouble("Hub.x"),
+                PVPServer.getInstance().getConfig().getDouble("Hub.y"),
+                PVPServer.getInstance().getConfig().getDouble("Hub.z"),
+                (float) PVPServer.getInstance().getConfig().getDouble("Hub.yaw"),
+                (float) PVPServer.getInstance().getConfig().getDouble("Hub.pitch")
+        );
     }
 
     public void addManager(Manager manager) {

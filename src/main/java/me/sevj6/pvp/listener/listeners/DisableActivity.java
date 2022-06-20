@@ -1,4 +1,4 @@
-package me.sevj6.pvp.mechanics;
+package me.sevj6.pvp.listener.listeners;
 
 import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.event.PlayerPlaceCrystalEvent;
@@ -19,10 +19,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByBlockEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
@@ -40,6 +37,17 @@ public class DisableActivity implements Listener {
             event.setCancelled(true);
             sendBlockChangePacket(player, event.getBlock().getLocation());
         }
+    }
+
+    // prevent regular nether/end portals
+    @EventHandler
+    public void onPortal(EntityPortalEvent event) {
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPortalEnter(EntityPortalExitEvent event) {
+        event.setCancelled(true);
     }
 
     @EventHandler

@@ -39,5 +39,16 @@ public class Portal implements IPortal {
         Location exitLocation = new Location(world, x, y, z, player.getLocation().getYaw(), player.getLocation().getPitch());
         exitLocation.setY(world.getHighestBlockYAt(exitLocation));
         player.teleport(exitLocation);
+//        Location exitLoc = null;
+//        int attempts = 0;
+//        while (exitLoc == null) {
+//            attempts++;
+//            exitLoc = new Location(world, genRandomNumber(-xRange, xRange), 0, genRandomNumber(-zRange, zRange), player.getLocation().getYaw(), player.getLocation().getPitch());
+//            exitLoc.setY(world.getHighestBlockYAt(exitLoc));
+//            if (attempts >= 300) return;
+//            if ((!exitLoc.getNearbyPlayers(10).isEmpty() || exitLoc.getNearbyEntitiesByType(EnderCrystal.class, 5).size() > 0))
+//                exitLoc = null;
+//        }
+//        player.teleport(exitLoc);
     }
 }

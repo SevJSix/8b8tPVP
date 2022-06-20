@@ -6,10 +6,10 @@ import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.arena.boiler.Arena;
 import me.sevj6.pvp.arena.boiler.ArenaIO;
 import me.sevj6.pvp.arena.boiler.IArena;
-import me.sevj6.pvp.arena.command.ArenaList;
-import me.sevj6.pvp.arena.command.ClearArenas;
-import me.sevj6.pvp.arena.command.CreateArena;
-import me.sevj6.pvp.arena.command.RemoveArena;
+import me.sevj6.pvp.command.commands.admin.ArenaList;
+import me.sevj6.pvp.command.commands.admin.ClearArenas;
+import me.sevj6.pvp.command.commands.admin.CreateArena;
+import me.sevj6.pvp.command.commands.admin.RemoveArena;
 import me.sevj6.pvp.util.Utils;
 import net.minecraft.server.v1_12_R1.BlockPosition;
 import net.minecraft.server.v1_12_R1.Blocks;
@@ -41,6 +41,7 @@ public class ArenaManager extends Manager implements IArena {
         plugin.getCommand("arenalist").setExecutor(new ArenaList());
         plugin.getCommand("arenacreate").setExecutor(new CreateArena(plugin.getInteractListener()));
         plugin.getCommand("arenaremove").setExecutor(new RemoveArena());
+        getArenas().forEach(Arena::loadArenaChunks);
     }
 
     @Override

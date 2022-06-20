@@ -1,4 +1,4 @@
-package me.sevj6.pvp.mechanics;
+package me.sevj6.pvp.listener.listeners;
 
 import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.util.Utils;

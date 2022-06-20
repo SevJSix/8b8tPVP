@@ -1,4 +1,4 @@
-package me.sevj6.pvp.portals.command;
+package me.sevj6.pvp.command.commands.admin;
 
 import lombok.AllArgsConstructor;
 import me.sevj6.pvp.portals.PortalManager;

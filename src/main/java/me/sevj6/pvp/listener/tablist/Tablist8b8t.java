@@ -1,4 +1,4 @@
-package me.sevj6.pvp.tablist;
+package me.sevj6.pvp.listener.tablist;
 
 import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.util.Utils;

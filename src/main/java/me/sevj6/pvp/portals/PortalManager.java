@@ -4,11 +4,12 @@ import lombok.Getter;
 import me.sevj6.pvp.Manager;
 import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.arena.boiler.Arena;
+import me.sevj6.pvp.command.commands.admin.CreatePortal;
+import me.sevj6.pvp.command.commands.admin.PortalList;
+import me.sevj6.pvp.command.commands.admin.RemovePortal;
+import me.sevj6.pvp.command.commands.admin.Wand;
 import me.sevj6.pvp.portals.boiler.Portal;
 import me.sevj6.pvp.portals.boiler.PortalIO;
-import me.sevj6.pvp.portals.command.CreatePortal;
-import me.sevj6.pvp.portals.command.PortalList;
-import me.sevj6.pvp.portals.command.RemovePortal;
 import me.sevj6.pvp.portals.listener.PlayerMoveListener;
 import me.sevj6.pvp.util.Utils;
 import net.minecraft.server.v1_12_R1.BlockPosition;
@@ -41,7 +42,8 @@ public class PortalManager extends Manager {
         plugin.getCommand("createportal").setExecutor(new CreatePortal(this, plugin.getInteractListener()));
         plugin.getCommand("removeportal").setExecutor(new RemovePortal(this));
         plugin.getCommand("portallist").setExecutor(new PortalList(this));
-        Bukkit.getPluginManager().registerEvents(new PlayerMoveListener(this), plugin);
+        plugin.getCommand("wand").setExecutor(new Wand());
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerMoveListener(this), plugin);
     }
 
     @Override

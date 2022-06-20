@@ -1,6 +1,5 @@
-package me.sevj6.pvp.tablist;
+package me.sevj6.pvp.listener.tablist;
 
-import lombok.Getter;
 import org.bukkit.entity.Player;
 
 import java.util.List;

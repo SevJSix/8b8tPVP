@@ -1,12 +1,18 @@
-SpawnPoints:
-  MainHub:
-    x: 0.5
-    y: 100
-    z: 0.5
-  KitCreator:
-    x: 0.5
-    y: 100
-    z: 0.5
+Hub:
+  world: "world"
+  x: 0.5
+  y: 100
+  z: 0.5
+  yaw: 0.0
+  pitch: 0.0
+
+KitCreator:
+  world: "world_the_end"
+  x: 0.5
+  y: 100
+  z: 0.5
+  yaw: 0.0
+  pitch: 0.0
 
 Command:
   DeniedMsg: "&cThis command is not available in this area"
