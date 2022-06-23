@@ -18,9 +18,6 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.hanging.HangingBreakEvent;
-import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -135,26 +132,6 @@ public class DisableActivity implements Listener {
         if (!(event.getDamager() instanceof Player)) return;
         Player player = (Player) event.getDamager();
         if (playerNotInArena(player)) event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onItemFramePlace(HangingPlaceEvent event) {
-        if (playerNotInArena(event.getPlayer())) event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onItemFrameBreak(HangingBreakEvent event) {
-        Location location = event.getEntity().getLocation();
-        BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
-        if (!Utils.isPositionInArena(pos)) event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onItemFrameBreakByEntity(HangingBreakByEntityEvent event) {
-        if (event.getRemover() instanceof Player) {
-            Player player = (Player) event.getRemover();
-            if (playerNotInArena(player)) event.setCancelled(true);
-        }
     }
 
     @EventHandler
