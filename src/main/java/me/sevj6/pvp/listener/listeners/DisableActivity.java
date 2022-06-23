@@ -1,32 +1,32 @@
 package me.sevj6.pvp.listener.listeners;
 
+import lombok.SneakyThrows;
 import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.event.PlayerPlaceCrystalEvent;
 import me.sevj6.pvp.util.Utils;
-import net.minecraft.server.v1_12_R1.BlockPosition;
-import net.minecraft.server.v1_12_R1.EntityPlayer;
-import net.minecraft.server.v1_12_R1.PacketPlayOutBlockChange;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+
+import java.lang.reflect.Method;
+import java.util.Objects;
 
 public class DisableActivity implements Listener {
 
@@ -71,6 +71,7 @@ public class DisableActivity implements Listener {
         Player player = event.getPlayer();
         try {
             if (player == null || event.getClickedBlock() == null) return;
+            if (player.getWorld().getName().equalsIgnoreCase("world_the_end")) return;
             if (playerNotInArena(player)) {
                 event.setCancelled(true);
                 sendBlockChangePacket(player, event.getClickedBlock().getLocation());
@@ -80,19 +81,18 @@ public class DisableActivity implements Listener {
     }
 
     @EventHandler
-    public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
-        if (event.getRightClicked() instanceof ItemFrame) {
-            ItemFrame frame = (ItemFrame) event.getRightClicked();
-            frame.setRotation(frame.getRotation().rotateCounterClockwise());
-            return;
-        }
-        if (playerNotInArena(event.getPlayer()) || !Utils.isPositionInArena(new BlockPosition(event.getClickedPosition().getX(), event.getClickedPosition().getY(), event.getClickedPosition().getZ())))
-            event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onDropItem(PlayerDropItemEvent event) {
-        if (playerNotInArena(event.getPlayer())) event.setCancelled(true);
+    @SneakyThrows
+    public void onAnvilUse(PrepareAnvilEvent event) {
+        Location location = event.getInventory().getLocation();
+        World world = ((CraftWorld) location.getWorld()).getHandle();
+        BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
+        BlockAnvil blockAnvil = (BlockAnvil) world.getType(pos).getBlock();
+        Method blockDataM = Block.class.getDeclaredMethod("w", IBlockData.class);
+        blockDataM.setAccessible(true);
+        IBlockData data = blockAnvil.getBlockData().set(BlockAnvil.FACING, EnumDirection.NORTH).set(BlockAnvil.DAMAGE, 0);
+        blockDataM.invoke(blockAnvil, data);
+        EntityPlayer player = ((CraftPlayer) Objects.requireNonNull(location.getNearbyPlayers(5).stream().findFirst().orElse(null))).getHandle();
+        world.setTypeAndData(pos, blockAnvil.getPlacedState(world, pos, EnumDirection.NORTH, 0F, 0F, 0f, 0, player).set(BlockAnvil.DAMAGE, 0), 0);
     }
 
     @EventHandler
@@ -105,8 +105,14 @@ public class DisableActivity implements Listener {
     }
 
     @EventHandler
+    public void onGrow(BlockGrowEvent event) {
+        event.setCancelled(true);
+    }
+
+    @EventHandler
     public void onPlaceCrystal(PlayerPlaceCrystalEvent event) {
-        if (playerNotInArena(event.getPlayer())) event.setCancelled(true);
+        if (playerNotInArena(event.getPlayer()) || event.getPlayer().getWorld().getName().equalsIgnoreCase("swordfight"))
+            event.setCancelled(true);
     }
 
     @EventHandler
@@ -129,13 +135,6 @@ public class DisableActivity implements Listener {
         if (!(event.getDamager() instanceof Player)) return;
         Player player = (Player) event.getDamager();
         if (playerNotInArena(player)) event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onExplode(BlockExplodeEvent event) {
-        Location location = event.getBlock().getLocation();
-        BlockPosition pos = new BlockPosition(location.getX(), location.getY(), location.getZ());
-        if (!Utils.isPositionInArena(pos)) event.setCancelled(true);
     }
 
     @EventHandler

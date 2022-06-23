@@ -2,8 +2,10 @@ package me.sevj6.pvp.command;
 
 import me.sevj6.pvp.Manager;
 import me.sevj6.pvp.PVPServer;
+import me.sevj6.pvp.command.commands.Hub;
 import me.sevj6.pvp.command.commands.Kill;
 import me.sevj6.pvp.command.commands.KitCreator;
+import me.sevj6.pvp.command.commands.admin.RotateFrames;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class GeneralCommandManager extends Manager {
@@ -16,6 +18,8 @@ public class GeneralCommandManager extends Manager {
     public void init(PVPServer plugin) {
         plugin.getCommand("kill").setExecutor(new Kill());
         plugin.getCommand("kitcreator").setExecutor(new KitCreator());
+        plugin.getCommand("hub").setExecutor(new Hub());
+        plugin.getCommand("rot").setExecutor(new RotateFrames());
     }
 
     @Override

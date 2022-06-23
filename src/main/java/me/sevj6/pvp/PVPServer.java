@@ -6,7 +6,10 @@ import me.sevj6.pvp.command.GeneralCommandManager;
 import me.sevj6.pvp.kit.KitManager;
 import me.sevj6.pvp.listener.GeneralListenerManager;
 import me.sevj6.pvp.listener.listeners.InteractListener;
+import me.sevj6.pvp.listener.tablist.Sorter;
+import me.sevj6.pvp.listener.tablist.Tablist8b8t;
 import me.sevj6.pvp.portals.PortalManager;
+import me.sevj6.pvp.util.ViolationManager;
 import me.txmc.protocolapi.PacketEventDispatcher;
 import me.txmc.protocolapi.PacketListener;
 import me.txmc.protocolapi.reflection.ClassProcessor;
@@ -22,6 +25,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 public final class PVPServer extends JavaPlugin {
@@ -34,11 +40,15 @@ public final class PVPServer extends JavaPlugin {
     @Getter
     private static PVPServer instance;
 
+    private Tablist8b8t tablist;
+    private Sorter sorter;
     private InteractListener interactListener;
     private PacketEventDispatcher dispatcher;
     private List<Manager> managers;
     private Location spawn;
     private Location kitCreator;
+    private List<ViolationManager> violationManagers;
+    private ScheduledExecutorService service;
 
     @Override
     public void onEnable() {
@@ -48,12 +58,17 @@ public final class PVPServer extends JavaPlugin {
         dispatcher = new PacketEventDispatcher(this);
         interactListener = new InteractListener();
         arenaManager = new ArenaManager();
+        sorter = new Sorter();
+        tablist = new Tablist8b8t(this);
+        violationManagers = new ArrayList<>();
         addManager(arenaManager);
         addManager(new KitManager());
         addManager(new PortalManager());
         addManager(new GeneralListenerManager());
         addManager(new GeneralCommandManager());
         managers.forEach(m -> m.init(this));
+        service = Executors.newScheduledThreadPool(4);
+        service.scheduleAtFixedRate(() -> violationManagers.forEach(ViolationManager::decrementAll), 0, 1, TimeUnit.SECONDS);
 
         kitCreator = new Location(
                 Bukkit.getWorld(PVPServer.getInstance().getConfig().getString("KitCreator.world")),
@@ -71,6 +86,16 @@ public final class PVPServer extends JavaPlugin {
                 (float) PVPServer.getInstance().getConfig().getDouble("Hub.yaw"),
                 (float) PVPServer.getInstance().getConfig().getDouble("Hub.pitch")
         );
+        dispatchCommand("gamerule doFireTick false");
+        dispatchCommand("gamerule announceAdvancements false");
+        dispatchCommand("gamerule mobGriefing false");
+        dispatchCommand("gamerule doDaylightCycle false");
+        dispatchCommand("gamerule doWeatherCycle false");
+        dispatchCommand("gamerule commandBlockOutput false");
+    }
+
+    private void dispatchCommand(String command) {
+        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
     }
 
     public void addManager(Manager manager) {
@@ -85,6 +110,11 @@ public final class PVPServer extends JavaPlugin {
     public void registerListener(Listener listener) {
         if (ClassProcessor.hasAnnotation(listener)) ClassProcessor.process(listener);
         getServer().getPluginManager().registerEvents(listener, this);
+    }
+
+    public void registerViolationManager(ViolationManager manager) {
+        if (violationManagers.contains(manager)) return;
+        violationManagers.add(manager);
     }
 
     @SafeVarargs

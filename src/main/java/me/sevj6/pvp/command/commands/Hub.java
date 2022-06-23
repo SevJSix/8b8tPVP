@@ -7,14 +7,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class KitCreator implements CommandExecutor {
-
+public class Hub implements CommandExecutor {
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String name, String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            player.teleport(PVPServer.getInstance().getKitCreator());
-            Utils.sendMessage(player, "&asending you to the &3kitcreator");
+            Utils.sendMessage(player, "&ateleporting you to the &3hub");
+            player.teleport(PVPServer.getInstance().getSpawn());
         }
         return true;
     }

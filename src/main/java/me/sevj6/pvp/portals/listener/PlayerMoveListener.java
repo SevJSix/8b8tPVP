@@ -21,12 +21,15 @@ public class PlayerMoveListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        for (Portal portal : portalManager.getPortals()) {
-            if (portal.getBoundingBox().intersects(((CraftPlayer) player).getHandle().getBoundingBox())) {
-                portal.onPortalEnter(portal.getExitArena(), player);
-                player.sendTitle(new Title(ChatColor.translateAlternateColorCodes('&', "&e&lNOW ENTERING &a&l" + portal.getExitArena().getName()),
-                        ChatColor.translateAlternateColorCodes('&', "&3Players in arena: &l" + portal.getExitArena().getActivePlayers().size()), 10, 32, 10));
+        try {
+            for (Portal portal : portalManager.getPortals()) {
+                if (portal.getBoundingBox().intersects(((CraftPlayer) player).getHandle().getBoundingBox())) {
+                    portal.onPortalEnter(portal.getExitArena(), player);
+                    player.sendTitle(new Title(ChatColor.translateAlternateColorCodes('&', "&e&lNOW ENTERING &a&l" + portal.getExitArena().getName()),
+                            ChatColor.translateAlternateColorCodes('&', "&3Players in arena: &l" + portal.getExitArena().getActivePlayers().size()), 10, 32, 10));
+                }
             }
+        } catch (Throwable ignored) {
         }
     }
 }

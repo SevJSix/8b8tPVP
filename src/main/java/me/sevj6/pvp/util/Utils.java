@@ -3,11 +3,14 @@ package me.sevj6.pvp.util;
 import me.sevj6.pvp.Manager;
 import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.arena.boiler.Arena;
+import me.sevj6.pvp.listener.tablist.Sorter;
 import me.sevj6.pvp.portals.boiler.Portal;
+import me.txmc.protocolapi.PacketEvent;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -18,8 +21,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class Utils {
+    public static final String PREFIX = "&6[&18b&98t&6]&r";
     private static final DecimalFormat format = new DecimalFormat("#.##");
-    private static final String PREFIX = "&7&r&b&38b8t&r&aPvP&r&7&r";
     private static final List<EntityType> invalidEntityTypes = Arrays.asList(EntityType.PLAYER, EntityType.ITEM_FRAME, EntityType.ARMOR_STAND);
 
     public static String translateChars(String input) {
@@ -78,7 +81,8 @@ public class Utils {
     public static void kick(Player player, String message) {
         message = String.format("%s &7->&r %s", PREFIX, message);
         message = translateChars(message);
-        player.kickPlayer(message);
+        String finalMessage = message;
+        run(() -> player.kickPlayer(finalMessage));
     }
 
     public static void log(String message) {
@@ -161,6 +165,48 @@ public class Utils {
 
     private static String format(double tps) {
         return (tps > 18.0D ? "§a" : (tps > 16.0D ? "§e" : "§c")) + (tps > 20.0D ? "" : "") + String.format("%.2f", Math.min((double) Math.round(tps * 100.0D) / 100.0D, 20.0D));
+    }
+
+    // fix npe issue with Bukkit.getWorld();
+    public static World getWorld(String worldName) {
+        for (World world : Bukkit.getWorlds()) {
+            String name = world.getName();
+            if (name.equalsIgnoreCase(worldName)) {
+                return world;
+            }
+        }
+        return null;
+    }
+
+    public static void parsePlayerListName(Player player) {
+        World world = player.getWorld();
+        Sorter sorter = PVPServer.getInstance().getSorter();
+        switch (world.getName()) {
+            case "world":
+                sorter.set(player, sorter.getHubTeam());
+                player.setPlayerListName(sorter.parse(sorter.getHubPrefix() + player.getName()));
+                break;
+            case "world_nether":
+                sorter.set(player, sorter.getNetherTeam());
+                player.setPlayerListName(sorter.parse(sorter.getNetherPrefix() + player.getName()));
+                break;
+            case "world_the_end":
+                sorter.set(player, sorter.getKitCreatorTeam());
+                player.setPlayerListName(sorter.parse(sorter.getKitCreatorPrefix() + player.getName()));
+                break;
+            case "swordfight":
+                sorter.set(player, sorter.getNoCrystalTeam());
+                player.setPlayerListName(sorter.parse(sorter.getNoCrystalPrefix() + player.getName()));
+                break;
+        }
+    }
+
+    public static void cancelAndLagback(PacketEvent.Incoming event) {
+        event.setCancelled(true);
+        Player player = event.getPlayer();
+        Utils.run(() -> player.teleport(player.getLocation()));
+        ((CraftPlayer) player).getHandle().positionChanged = true;
+        ((CraftPlayer) player).getHandle().playerConnection.syncPosition();
     }
 
     public static String getRealTps() {

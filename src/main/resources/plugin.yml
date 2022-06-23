@@ -1,8 +1,8 @@
 name: 8b8tPVP
 version: ${project.version}
 main: me.sevj6.pvp.PVPServer
-authors: [ SevJ6 ]
-description: Main plugin for 8b8tpvp hosted by leee developed by SevJ6
+authors: [ SevJ6, 254n_m ]
+description: Main plugin for 8b8tpvp hosted by leee developed by SevJ6 and 254n_m
 load: POSTWORLD
 commands:
   clear:
@@ -17,3 +17,9 @@ commands:
   removeportal:
   portallist:
   kitcreator:
+  rot:
+    aliases:
+      - kc
+  hub:
+    aliases:
+      - spawn
