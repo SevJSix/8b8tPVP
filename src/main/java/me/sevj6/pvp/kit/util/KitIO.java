@@ -5,6 +5,7 @@ import me.sevj6.pvp.kit.Kit;
 import net.minecraft.server.v1_12_R1.NBTCompressedStreamTools;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.util.UUID;
 
@@ -21,16 +22,21 @@ public class KitIO {
         if (!kitDataFolder.exists()) kitDataFolder.mkdirs();
     }
 
+    public static File getKitDataFolder() {
+        return kitDataFolder;
+    }
+
     public static void saveKitData(Kit kit) throws Throwable {
         File kitFile;
-        if (kit.getType() == Kit.KitType.GLOBAL) {
+        if (kit.getOwner() == null) { //Save a global kit
             kitFile = new File(kitDataFolder, kit.getName().concat(".kit"));
-        } else kitFile = new File(kitDataFolder, kit.getOwner() + "/" + kit.getName().concat(".kit"));
+        } else {
+            File ownerDir = new File(kitDataFolder, String.valueOf(kit.getOwner().getUniqueId()));
+            if (!ownerDir.exists()) ownerDir.mkdirs();
+            kitFile = new File(ownerDir, kit.getName().concat(".kit"));
+        }
         if (!kitFile.exists()) kitFile.createNewFile();
         NBTTagCompound compound = new NBTTagCompound();
-        compound.setString("Name", kit.getName());
-        compound.setString("Type", kit.getType().name());
-//        ((CraftInventoryPlayer) inventory).getInventory().a(invContents);
         compound.set("InvContents", kit.getKitItems());
         FileOutputStream fos = new FileOutputStream(kitFile);
         DataOutputStream out = new DataOutputStream(fos);
@@ -40,13 +46,25 @@ public class KitIO {
         fos.close();
     }
 
-    public static NBTTagCompound loadKitData(UUID owner, String name, Kit.KitType type) throws Throwable {
+    /**
+     * Loads kit data
+     *
+     * @param owner if null the kit is considered a global kit otherwise user
+     * @param name  The name if the kit
+     * @return The kit's data in NBT form
+     * @throws Throwable Thrown if the server process does not have sufficient permissions to read the kit file
+     */
+    public static NBTTagCompound loadKitData(@Nullable UUID owner, String name) throws Throwable {
         File kitFile;
-        if (type == Kit.KitType.GLOBAL) {
+        if (owner == null) { //Load a global kit
             kitFile = new File(kitDataFolder, name.concat(".kit"));
         } else kitFile = new File(kitDataFolder, owner + "/" + name.concat(".kit"));
         if (!kitFile.exists()) return null;
-        FileInputStream fis = new FileInputStream(kitFile);
+        return loadKitData(kitFile);
+    }
+
+    public static NBTTagCompound loadKitData(File file) throws Throwable {
+        FileInputStream fis = new FileInputStream(file);
         DataInputStream in = new DataInputStream(fis);
         NBTTagCompound compound = NBTCompressedStreamTools.readNBT(in);
         in.close();

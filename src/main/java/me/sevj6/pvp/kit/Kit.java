@@ -1,8 +1,10 @@
 package me.sevj6.pvp.kit;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.kit.util.KitIO;
+import me.sevj6.pvp.util.Utils;
 import net.minecraft.server.v1_12_R1.EntityPlayer;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import net.minecraft.server.v1_12_R1.NBTTagList;
@@ -10,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 /**
@@ -20,40 +23,32 @@ import java.util.UUID;
 @Getter
 //TODO make this not chinese
 public class Kit {
-    private final UUID owner;
     private NBTTagList kitItems;
+    private final Player owner;
     private final String name;
-    private final KitType type;
 
-    public Kit(Player owner, String name, KitType type) {
-        this(owner.getUniqueId(), name, type);
-        if (!owner.isOnline()) throw new IllegalArgumentException("Player is not online");
-        kitItems = ((CraftPlayer) owner).getHandle().inventory.a(new NBTTagList());
-    }
-
-    public Kit(UUID owner, String name, KitType type) {
+    public Kit(@Nullable Player owner, String name) {
         this.owner = owner;
         this.name = name;
-        this.type = type;
-        try {
-            NBTTagCompound kitData = KitIO.loadKitData(owner, name, type);
-            if (kitData == null) throw new IllegalArgumentException("Kit does not exist");
-            kitItems = KitIO.loadKitData(owner, name, type).getList("InvContents", 10);
-        } catch (Throwable t) {
-            PVPServer.getInstance().getLogger().warning("Failed to load kit " + name + " for " + owner.toString());
-            t.printStackTrace();
-        }
+        load((owner == null) ? null : owner.getUniqueId());
     }
 
-    public Player getOwnerAsPlayer() {
-        return Bukkit.getPlayer(owner);
+    public void setKitItems(NBTTagList kitItems, boolean save) {
+        this.kitItems = kitItems;
+        if (save) {
+            try {
+                KitIO.saveKitData(this);
+            } catch (Throwable t) {
+                Utils.log("&cFailed to save kit to disk! Please see the stacktrace below for more info");
+                t.printStackTrace();
+            }
+        }
     }
 
     //Set the owners inventory to the kit's contents
     public void setOwnerLoadOut() {
-        Player player = getOwnerAsPlayer();
-        if (player == null || !player.isOnline()) return;
-        setLoadOut(player);
+        if (owner == null || !owner.isOnline()) return;
+        setLoadOut(owner);
     }
 
     public void setLoadOut(Player player) {
@@ -61,16 +56,19 @@ public class Kit {
         EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         nmsPlayer.inventory.b(getKitItems());
     }
-
-    public void save() {
+    public void load(UUID id) {
         try {
-            KitIO.saveKitData(this);
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
+            NBTTagCompound kitData = KitIO.loadKitData(id, getName());
+            if (kitData == null) {
+                kitItems = null;
+                return;
+            }
+            kitItems = kitData.getList("InvContents", 10);
+        } catch (Throwable t) {
+            t.printStackTrace();
         }
     }
-
-    public enum KitType {
-        GLOBAL, USER
+    public boolean isGlobalKit() {
+        return owner == null;
     }
 }
