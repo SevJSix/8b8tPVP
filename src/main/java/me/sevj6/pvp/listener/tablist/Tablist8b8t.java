@@ -58,7 +58,7 @@ public class Tablist8b8t implements AbstractTablist {
                 .replace("%players%", String.valueOf(getOnlinePlayers().size()))
                 .replace("%ping%", String.valueOf(ping))
                 .replace("%uptime%", Utils.getFormattedInterval(System.currentTimeMillis() - PVPServer.START_TIME))
-                .replace("%swordfight%", String.valueOf(Bukkit.getWorld("swordfight").getPlayerCount()))
+//                .replace("%swordfight%", String.valueOf(Bukkit.getWorld("swordfight").getPlayerCount()))
                 .replace("%nether%", String.valueOf(Bukkit.getWorld("world_nether").getPlayerCount()))
                 .replace("%overworld%", String.valueOf(Bukkit.getWorld("world").getPlayerCount()))
                 .replace("%end%", String.valueOf(Bukkit.getWorld("world_the_end").getPlayerCount()))

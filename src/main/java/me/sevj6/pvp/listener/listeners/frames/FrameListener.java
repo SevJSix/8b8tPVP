@@ -24,9 +24,9 @@ public class FrameListener implements Listener {
         Player player = event.getPlayer();
         if (Utils.isPlayerInArena(player)) return;
         ItemFrame frame = (ItemFrame) event.getRightClicked();
-        if (frame.getItem() == null) return;
+        if (frame.getItem() == null || frame.getItem().getType().equals(org.bukkit.Material.AIR)) return;
         frame.setRotation(Rotation.COUNTER_CLOCKWISE_45);
-        FrameInventory frameInventory = new FrameInventory("&18b&98t &6PvP&r", frame.getItem());
+        FrameInventory frameInventory = new FrameInventory("%mat%", frame.getItem());
         frameInventory.open(player);
     }
 

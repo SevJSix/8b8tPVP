@@ -16,8 +16,15 @@ commands:
   createportal:
   removeportal:
   portallist:
-  kitcreator:
+  help:
+  ci:
   rot:
+  discord:
+  garbage:
+    aliases:
+      - gb
+      - bin
+  kitcreator:
     aliases:
       - kc
   hub:

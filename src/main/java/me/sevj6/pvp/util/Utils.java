@@ -204,9 +204,8 @@ public class Utils {
     public static void cancelAndLagback(PacketEvent.Incoming event) {
         event.setCancelled(true);
         Player player = event.getPlayer();
-        Utils.run(() -> player.teleport(player.getLocation()));
-        ((CraftPlayer) player).getHandle().positionChanged = true;
-        ((CraftPlayer) player).getHandle().playerConnection.syncPosition();
+        EntityPlayer ep = ((CraftPlayer) player).getHandle();
+        run(() -> ep.playerConnection.teleport(player.getLocation()));
     }
 
     public static String getRealTps() {

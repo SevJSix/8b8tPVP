@@ -10,7 +10,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -18,6 +20,7 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -142,6 +145,27 @@ public class DisableActivity implements Listener {
                 event.setTo(event.getFrom());
             }
         }
+    }
+
+    @EventHandler
+    public void onBow(ProjectileLaunchEvent event) {
+        if (event.getEntity().getShooter() instanceof Player) {
+            Player player = (Player) event.getEntity().getShooter();
+            if (event.getEntity() instanceof Arrow || event.getEntity() instanceof ThrownPotion) {
+                if (Utils.isPlayerInArena(player)) return;
+                event.setCancelled(true);
+                if ((event.getEntity() instanceof Arrow)) {
+                    Utils.sendMessage(player, "&cYou cannot shoot arrows here");
+                } else {
+                    Utils.sendMessage(player, "&cYou cannot throw potions here");
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onHangingBreak(HangingBreakEvent event) {
+        event.setCancelled(true);
     }
 
     @EventHandler

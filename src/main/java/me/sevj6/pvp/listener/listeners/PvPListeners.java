@@ -1,9 +1,7 @@
 package me.sevj6.pvp.listener.listeners;
 
 import lombok.SneakyThrows;
-import me.sevj6.pvp.event.PlayerPlaceCrystalEvent;
 import me.sevj6.pvp.util.ItemUtil;
-import me.sevj6.pvp.util.Utils;
 import net.minecraft.server.v1_12_R1.BlockPosition;
 import net.minecraft.server.v1_12_R1.NonNullList;
 import net.minecraft.server.v1_12_R1.TileEntityDispenser;
@@ -26,13 +24,6 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 
 public class PvPListeners implements Listener {
-
-    @EventHandler
-    public void onPlace(PlayerPlaceCrystalEvent event) {
-        if (Utils.isPlayerInArena(event.getPlayer())) {
-            event.explodeCrystal();
-        }
-    }
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {

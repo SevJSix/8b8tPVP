@@ -22,12 +22,10 @@ Command:
     - "msg"
     - "r"
     - "l"
-    - "tps"
     - "help"
     - "tell"
     - "w"
     - "discord"
-    - "ping"
   # EverywhereAllowed inherits from ArenaAllowed
   EverywhereAllowed:
     - "kitcreator"
@@ -39,6 +37,9 @@ Command:
     - "ci"
     - "kc"
     - "help"
+    - "garbage"
+    - "bin"
+    - "gb"
 
 TabList:
   Header:
@@ -49,14 +50,21 @@ TabList:
     - ""
     - "&7tps: &f%tps% &7ping: &f%ping% &7players: &f%players% &7uptime: &f%uptime%"
     - ""
-    - "&6World Populations:"
-    - "&6Main Hub: &l%overworld%"
-    - "&6Nether: &l%nether%"
-    - "&6Sword PVP: &l%swordfight%"
-    - "&6Kit Creator: &l%end%"
-    - ""
     - "&7contact: nate@xera.ca"
     - "&7discussion: http://discord.8b8t.me"
     - "&7website: https://www.8b8t.me"
     - "&7These are the only official 8b8t PVP websites and contacts"
     - ""
+
+HelpList:
+  - "&1---------------------------"
+  - "&9/createukit <name> - create a kit with your current loadout"
+  - "&9/deleteukit <name> - remove a kit"
+  - "&9/renameukit <name> <newName> - rename a kit"
+  - "&9/kc - make your own custom kits"
+  - "&9/hub - return to the main hub"
+  - "&9/ci - clear your current inventory"
+  - "&9/gb - open a garbage bin inventory to throw away items"
+  - "&9/kill - commit suicide"
+  - "&9/discord - join the official 8b8tPvP discord"
+  - "&1---------------------------"
