@@ -3,8 +3,8 @@ package me.sevj6.pvp.arena.boiler;
 import lombok.Getter;
 import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.arena.ArenaManager;
+import me.sevj6.pvp.util.Utils;
 import net.minecraft.server.v1_12_R1.BlockPosition;
-import org.bukkit.Bukkit;
 
 import java.io.*;
 import java.util.Arrays;
@@ -57,7 +57,7 @@ public class ArenaIO {
             String name = file.getName().split("\\.")[0];
             FileInputStream fis = new FileInputStream(file);
             DataInputStream in = new DataInputStream(fis);
-            Arena arena = new Arena(name, Bukkit.getWorld(in.readUTF()),
+            Arena arena = new Arena(name, Utils.getWorld(in.readUTF()),
                     new BlockPosition(in.readInt(), in.readInt(), in.readInt()),
                     new BlockPosition(in.readInt(), in.readInt(), in.readInt()));
             if (in.available() > 0) throw new IOException("Arena file had more data than accepted: " + file.getName());
