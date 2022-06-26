@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
  */
 @AllArgsConstructor
 public class CreateUKitCommand implements CommandExecutor {
-    private KitManager manager;
+    private final KitManager manager;
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
@@ -26,15 +26,17 @@ public class CreateUKitCommand implements CommandExecutor {
             Player player = (Player) sender;
             if (player.hasPermission("8b8tpvp.createukit")) {
                 if (args.length >= 1) {
-                    String name = args[0];
-                    if (!manager.isKitRegistered(name, player.getUniqueId())) {
-                        Kit kit = new Kit(player, name);
-                        NBTTagList items = new NBTTagList();
-                        ((CraftInventoryPlayer) player.getInventory()).getInventory().a(items);
-                        kit.setKitItems(items, true);
-                        manager.registerKit(kit);
-                        Utils.sendMessage(player, "&3Successfully created kit with name&r&a " + kit.getName());
-                    } else Utils.sendMessage(player, "&cA kit with that name already exists");
+                    if (!(manager.getKits(player).size() >= 9)) {
+                        String name = args[0];
+                        if (!manager.isKitRegistered(name, player.getUniqueId())) {
+                            Kit kit = new Kit(player, name);
+                            NBTTagList items = new NBTTagList();
+                            ((CraftInventoryPlayer) player.getInventory()).getInventory().a(items);
+                            kit.setKitItems(items, true);
+                            manager.registerKit(kit);
+                            Utils.sendMessage(player, "&3Successfully created kit with name&r&a " + kit.getName());
+                        } else Utils.sendMessage(player, "&cA kit with that name already exists");
+                    } else Utils.sendMessage(player, "&cYou can only have a maximum of 9 user kits");
                 } else Utils.sendMessage(sender, "&c/createukit <name>");
             } else Utils.sendMessage(sender, "&cYou do not have permission to run this command");
         } else Utils.sendMessage(sender, "&cYou must be a player to run this command");

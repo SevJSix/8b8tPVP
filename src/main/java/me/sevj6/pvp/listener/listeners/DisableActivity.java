@@ -30,6 +30,12 @@ import java.util.Objects;
 
 public class DisableActivity implements Listener {
 
+    private final org.bukkit.World SWORD_FIGHT;
+
+    public DisableActivity() {
+        this.SWORD_FIGHT = Bukkit.getWorld("swordfight");
+    }
+
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
@@ -110,12 +116,6 @@ public class DisableActivity implements Listener {
     }
 
     @EventHandler
-    public void onPlaceCrystal(PlayerPlaceCrystalEvent event) {
-        if (playerNotInArena(event.getPlayer()) || event.getPlayer().getWorld().getName().equalsIgnoreCase("swordfight"))
-            event.setCancelled(true);
-    }
-
-    @EventHandler
     public void onDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
@@ -145,6 +145,23 @@ public class DisableActivity implements Listener {
                 event.setTo(event.getFrom());
             }
         }
+    }
+
+    @EventHandler
+    public void onCrystalSpawn(PlayerPlaceCrystalEvent event) {
+        if (SWORD_FIGHT.equals(event.getPlayer().getWorld())) {
+            cancelCrystal(event);
+            return;
+        }
+        if (Utils.isPlayerInArena(event.getPlayer())) return;
+        cancelCrystal(event);
+    }
+
+    private void cancelCrystal(PlayerPlaceCrystalEvent event) {
+        event.setCancelled(true);
+        if (event.getCrystal() == null) return;
+        event.getCrystal().setInvulnerable(true);
+        event.getCrystal().die();
     }
 
     @EventHandler

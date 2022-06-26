@@ -3,6 +3,7 @@ package me.sevj6.pvp.kit.commands;
 import lombok.AllArgsConstructor;
 import me.sevj6.pvp.kit.Kit;
 import me.sevj6.pvp.kit.KitManager;
+import me.sevj6.pvp.kit.gui.selectors.KitGuiTypeSelector;
 import me.sevj6.pvp.util.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,7 +17,7 @@ import org.bukkit.entity.Player;
  */
 @AllArgsConstructor
 public class KitCommand implements CommandExecutor {
-    private KitManager manager;
+    private final KitManager manager;
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
@@ -24,15 +25,19 @@ public class KitCommand implements CommandExecutor {
             Player player = ((Player) sender);
             if (args.length == 1) {
                 String name = args[0];
-                Kit kit = manager.getGlobalKits().stream().filter(k -> k.getName().equalsIgnoreCase(name)).findAny().orElse(null);
+                Kit kit;
+                kit = manager.getGlobalKits().stream().filter(k -> k.getName().equalsIgnoreCase(name)).findAny().orElse(null);
+                if (kit == null)
+                    kit = manager.getKits(player).stream().filter(k -> k.getName().equalsIgnoreCase(name)).findAny().orElse(null);
                 if (kit == null) {
                     Utils.sendMessage(player, "&cNo kit with the name&r&a " + name + "&r&c exists");
                     return true;
                 }
                 kit.setLoadOut(player);
-                Utils.sendMessage(player, "&3Set your kit to&r&a " + kit.getName());
+                Utils.sendMessage(player, "&3Set your loadout to&r&a " + kit.getName());
             } else {
-                //TODO: Make a kit selection gui
+                KitGuiTypeSelector guiTypeSelector = new KitGuiTypeSelector(player);
+                guiTypeSelector.open();
             }
         } else Utils.sendMessage(sender, "&cYou must be a player to use this command");
         return true;

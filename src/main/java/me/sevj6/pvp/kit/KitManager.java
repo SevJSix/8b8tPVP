@@ -6,10 +6,13 @@ import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.kit.commands.CreateGKitCommand;
 import me.sevj6.pvp.kit.commands.CreateUKitCommand;
 import me.sevj6.pvp.kit.commands.KitCommand;
+import me.sevj6.pvp.kit.listener.InventoryClick;
+import me.sevj6.pvp.kit.listener.LoadUserKitsListener;
 import me.sevj6.pvp.kit.util.KitIO;
 import me.sevj6.pvp.util.Utils;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,14 +40,36 @@ public class KitManager extends Manager {
         globalKits = new ArrayList<>();
         userKits = new HashMap<>();
         managerDataFolder = super.getDataFolder();
-        plugin.registerCommand("creategkit", new CreateGKitCommand(this));
-        plugin.registerCommand("createukit", new CreateUKitCommand(this));
-        plugin.registerCommand("kit", new KitCommand(this));
+        plugin.getServer().getPluginManager().registerEvents(new LoadUserKitsListener(this), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new InventoryClick(this), plugin);
+        plugin.getCommand("creategkit").setExecutor(new CreateGKitCommand(this));
+        plugin.getCommand("createukit").setExecutor(new CreateUKitCommand(this));
+        plugin.getCommand("kit").setExecutor(new KitCommand(this));
         try {
             loadAllGlobalKits();
         } catch (Throwable t) {
             Utils.log("&cFailed to load the global kits please see the stacktrace below for more info");
             t.printStackTrace();
+        }
+    }
+
+    public List<Kit> getKits(Player player) {
+        return userKits.get(player.getUniqueId());
+    }
+
+    public void loadUserKits(Player player) throws Throwable {
+        UUID uuid = player.getUniqueId();
+        Utils.log("&aLoading user kits from &3" + player.getName());
+        File uuidDataFolder = new File(KitIO.getKitDataFolder(), String.valueOf(uuid));
+        if (!uuidDataFolder.exists()) uuidDataFolder.mkdirs();
+        for (File file : Arrays.stream(uuidDataFolder.listFiles()).filter(File::isFile).filter(f -> f.getName().endsWith(".kit")).collect(Collectors.toList())) {
+            String name = file.getName().replace(".kit", "");
+            NBTTagCompound compound = KitIO.loadKitData(file);
+            if (compound == null) throw new IOException("Failed to read kit data properly");
+            Kit kit = new Kit(player, name);
+            kit.setKitItems(compound.getList("InvContents", 10), false);
+            registerKit(kit);
+            Utils.log("&3User kit&r&a " + kit.getName() + "&r&3 loaded successfully!");
         }
     }
 
@@ -98,6 +123,7 @@ public class KitManager extends Manager {
         }
         return true;
     }
+
     public Kit getKitByName(String name) {
         return null;
     }

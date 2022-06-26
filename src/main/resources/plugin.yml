@@ -9,6 +9,9 @@ commands:
     description: clear all arenas
   arenatest:
   arenalist:
+  creategkit:
+  createukit:
+  kit:
   arenacreate:
   arenaremove:
   wand:

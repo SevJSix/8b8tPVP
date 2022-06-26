@@ -13,7 +13,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import org.bukkit.entity.*;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -62,12 +65,6 @@ public class Miscellaneous implements Listener {
     public void onSpawn(EntitySpawnEvent event) {
         if (event.getEntity() instanceof EnderDragon) {
             event.setCancelled(true);
-            return;
-        }
-        if (event.getLocation().getWorld().getName().equalsIgnoreCase("swordfight")) {
-            if (event.getEntity() instanceof EnderCrystal) {
-                event.setCancelled(true);
-            }
         }
     }
 

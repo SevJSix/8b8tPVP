@@ -49,6 +49,7 @@ public final class PVPServer extends JavaPlugin {
     private Location kitCreator;
     private List<ViolationManager> violationManagers;
     private ScheduledExecutorService service;
+    private KitManager kitManager;
 
     @Override
     public void onEnable() {
@@ -58,11 +59,12 @@ public final class PVPServer extends JavaPlugin {
         dispatcher = new PacketEventDispatcher(this);
         interactListener = new InteractListener();
         arenaManager = new ArenaManager();
+        kitManager = new KitManager();
         sorter = new Sorter();
         tablist = new Tablist8b8t(this);
         violationManagers = new ArrayList<>();
         addManager(arenaManager);
-        addManager(new KitManager());
+        addManager(kitManager);
         addManager(new PortalManager());
         addManager(new GeneralListenerManager());
         addManager(new GeneralCommandManager());
