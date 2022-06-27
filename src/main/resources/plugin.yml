@@ -11,6 +11,8 @@ commands:
   arenalist:
   creategkit:
   createukit:
+  deleteukit:
+  deletegkit:
   kit:
   arenacreate:
   arenaremove:

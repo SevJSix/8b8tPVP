@@ -15,6 +15,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Collections;
+
 public class KitGuiGlobal extends KitGuiBasic {
 
     @Getter
@@ -29,7 +31,8 @@ public class KitGuiGlobal extends KitGuiBasic {
             ItemMeta meta = current.getItemMeta();
             meta.addEnchant(Enchantment.DURABILITY, 1, true);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&b" + kit.getName()));
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&3" + kit.getName()));
+            meta.setLore(Collections.singletonList(ChatColor.translateAlternateColorCodes('&', "&7&oGlobal Kit - Accessible to All Players")));
             current.setItemMeta(meta);
             net.minecraft.server.v1_12_R1.ItemStack nmsCopy = CraftItemStack.asNMSCopy(current);
             NBTTagCompound compound = nmsCopy.getTag();
@@ -37,16 +40,27 @@ public class KitGuiGlobal extends KitGuiBasic {
             nmsCopy.setTag(compound);
             getInventory().setItem(i, nmsCopy.asBukkitCopy());
         }
+        ItemStack goBackButton = new ItemStack(Material.STONE_BUTTON);
+        ItemMeta meta = goBackButton.getItemMeta();
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&7Go Back"));
+        goBackButton.setItemMeta(meta);
+        getInventory().setItem(27, goBackButton);
     }
 
     @Override
     public void onSlotClick(int slot) {
+        Player player = getPlayer();
+        if (getItem(slot).getType() == Material.STONE_BUTTON) {
+            KitGuiTypeSelector guiTypeSelector = new KitGuiTypeSelector(player);
+            guiTypeSelector.open();
+            return;
+        }
         String kitNameFromItem = parseKitName(getItem(slot));
         if (kitNameFromItem == null) return;
         Kit kit = kitManager.getGlobalKits().stream().filter(k -> k.getName().equalsIgnoreCase(kitNameFromItem)).findAny().orElse(null);
         if (kit == null) return;
-        kit.setLoadOut(getPlayer());
-        getPlayer().closeInventory();
+        kit.setLoadOut(player);
+        player.closeInventory();
         sendKittedMessage(kit);
     }
 

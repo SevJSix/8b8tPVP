@@ -3,9 +3,7 @@ package me.sevj6.pvp.kit;
 import lombok.Getter;
 import me.sevj6.pvp.Manager;
 import me.sevj6.pvp.PVPServer;
-import me.sevj6.pvp.kit.commands.CreateGKitCommand;
-import me.sevj6.pvp.kit.commands.CreateUKitCommand;
-import me.sevj6.pvp.kit.commands.KitCommand;
+import me.sevj6.pvp.kit.commands.*;
 import me.sevj6.pvp.kit.listener.InventoryClick;
 import me.sevj6.pvp.kit.listener.LoadUserKitsListener;
 import me.sevj6.pvp.kit.util.KitIO;
@@ -44,6 +42,8 @@ public class KitManager extends Manager {
         plugin.getServer().getPluginManager().registerEvents(new InventoryClick(this), plugin);
         plugin.getCommand("creategkit").setExecutor(new CreateGKitCommand(this));
         plugin.getCommand("createukit").setExecutor(new CreateUKitCommand(this));
+        plugin.getCommand("deleteukit").setExecutor(new RemoveUKitCommand(this));
+        plugin.getCommand("deletegkit").setExecutor(new RemoveGKitCommand(this));
         plugin.getCommand("kit").setExecutor(new KitCommand(this));
         try {
             loadAllGlobalKits();
@@ -114,14 +114,30 @@ public class KitManager extends Manager {
         if (isKitRegistered(kit.getName(), ((kit.isGlobalKit()) ? null : kit.getOwner().getUniqueId()))) return false;
         if (kit.isGlobalKit()) {
             globalKits.add(kit);
-            System.out.println("Registering global kit");
         } else {
-            System.out.println("Registering user kit to " + kit.getOwner().getName());
             if (userKits.containsKey(kit.getOwner().getUniqueId())) {
                 userKits.get(kit.getOwner().getUniqueId()).add(kit);
             } else userKits.put(kit.getOwner().getUniqueId(), new ArrayList<>(Collections.singletonList(kit)));
         }
         return true;
+    }
+
+    public void removeKit(Player sender, Kit kit) {
+        try {
+            boolean deleted = kit.delete();
+            if (!deleted) {
+                Utils.sendMessage(sender, "&cError! could not delete &a" + kit.getName());
+                return;
+            }
+            if (kit.isGlobalKit()) {
+                globalKits.remove(kit);
+            } else {
+                userKits.get(sender.getUniqueId()).remove(kit);
+            }
+            Utils.sendMessage(sender, "&3Successfully removed&r&a " + kit.getName());
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
     public Kit getKitByName(String name) {

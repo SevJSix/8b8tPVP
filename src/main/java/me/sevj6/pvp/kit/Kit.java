@@ -1,14 +1,11 @@
 package me.sevj6.pvp.kit;
 
 import lombok.Getter;
-import lombok.Setter;
-import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.kit.util.KitIO;
 import me.sevj6.pvp.util.Utils;
 import net.minecraft.server.v1_12_R1.EntityPlayer;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import net.minecraft.server.v1_12_R1.NBTTagList;
-import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -23,9 +20,9 @@ import java.util.UUID;
 @Getter
 //TODO make this not chinese
 public class Kit {
-    private NBTTagList kitItems;
     private final Player owner;
     private final String name;
+    private NBTTagList kitItems;
 
     public Kit(@Nullable Player owner, String name) {
         this.owner = owner;
@@ -45,6 +42,10 @@ public class Kit {
         }
     }
 
+    public boolean delete() throws Throwable {
+        return KitIO.deleteKit(this);
+    }
+
     //Set the owners inventory to the kit's contents
     public void setOwnerLoadOut() {
         if (owner == null || !owner.isOnline()) return;
@@ -56,6 +57,7 @@ public class Kit {
         EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         nmsPlayer.inventory.b(getKitItems());
     }
+
     public void load(UUID id) {
         try {
             NBTTagCompound kitData = KitIO.loadKitData(id, getName());
@@ -68,6 +70,7 @@ public class Kit {
             t.printStackTrace();
         }
     }
+
     public boolean isGlobalKit() {
         return owner == null;
     }

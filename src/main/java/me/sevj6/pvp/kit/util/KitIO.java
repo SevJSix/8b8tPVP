@@ -26,6 +26,23 @@ public class KitIO {
         return kitDataFolder;
     }
 
+    public static boolean deleteKit(Kit kit) throws Throwable {
+        File kitFile;
+        if (kit.getOwner() == null) {
+            kitFile = new File(kitDataFolder, kit.getName().concat(".kit"));
+        } else {
+            File ownerDir = new File(kitDataFolder, String.valueOf(kit.getOwner().getUniqueId()));
+            if (!ownerDir.exists()) ownerDir.mkdirs();
+            kitFile = new File(ownerDir, kit.getName().concat(".kit"));
+        }
+        if (!kitFile.exists()) {
+            return false;
+        } else {
+            kitFile.delete();
+            return true;
+        }
+    }
+
     public static void saveKitData(Kit kit) throws Throwable {
         File kitFile;
         if (kit.getOwner() == null) { //Save a global kit

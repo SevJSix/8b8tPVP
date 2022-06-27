@@ -26,7 +26,8 @@ public class CreateUKitCommand implements CommandExecutor {
             Player player = (Player) sender;
             if (player.hasPermission("8b8tpvp.createukit")) {
                 if (args.length >= 1) {
-                    if (!(manager.getKits(player).size() >= 9)) {
+                    boolean tooManyKits = manager.getKits(player) != null && manager.getKits(player).size() >= 9;
+                    if (!tooManyKits) {
                         String name = args[0];
                         if (!manager.isKitRegistered(name, player.getUniqueId())) {
                             Kit kit = new Kit(player, name);

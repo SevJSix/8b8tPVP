@@ -1,10 +1,12 @@
 package me.sevj6.pvp.kit.commands;
 
 import lombok.AllArgsConstructor;
+import me.sevj6.pvp.event.PlayerEquipKitEvent;
 import me.sevj6.pvp.kit.Kit;
 import me.sevj6.pvp.kit.KitManager;
 import me.sevj6.pvp.kit.gui.selectors.KitGuiTypeSelector;
 import me.sevj6.pvp.util.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -33,6 +35,8 @@ public class KitCommand implements CommandExecutor {
                     Utils.sendMessage(player, "&cNo kit with the name&r&a " + name + "&r&c exists");
                     return true;
                 }
+                PlayerEquipKitEvent event = new PlayerEquipKitEvent(player, kit);
+                Bukkit.getServer().getPluginManager().callEvent(event);
                 kit.setLoadOut(player);
                 Utils.sendMessage(player, "&3Set your loadout to&r&a " + kit.getName());
             } else {
