@@ -1,11 +1,13 @@
 package me.sevj6.pvp.listener.listeners;
 
 import lombok.SneakyThrows;
+import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.util.ItemUtil;
 import net.minecraft.server.v1_12_R1.BlockPosition;
 import net.minecraft.server.v1_12_R1.NonNullList;
 import net.minecraft.server.v1_12_R1.TileEntityDispenser;
 import net.minecraft.server.v1_12_R1.World;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
@@ -56,9 +58,8 @@ public class PvPListeners implements Listener {
     public void onPlace(BlockPlaceEvent event) {
         if (event.isCancelled() || event.getBlockPlaced() == null) return;
         Block block = event.getBlockPlaced();
-        if (!ItemUtil.isShulker(block)) return;
-        ShulkerBox shulkerBox = (ShulkerBox) block.getState();
-        event.setCancelled(Arrays.stream(shulkerBox.getInventory().getContents()).anyMatch(ItemUtil::is32k));
+        if (!(block.getState() instanceof ShulkerBox)) return;
+        ItemUtil.revertShulker(block);
     }
 
     @SneakyThrows
@@ -67,7 +68,9 @@ public class PvPListeners implements Listener {
         Block block = event.getBlock();
         boolean isDispensing32k = is32kShulker(event.getItem()) && !block.getWorld().getName().equalsIgnoreCase("world_nether");
         event.setCancelled(block.getLocation().getY() <= 1 || block.getLocation().getY() >= 255 || isDispensing32k);
-        if (isDispensing32k) clearDispenser(block);
+        if (isDispensing32k) {
+            Bukkit.getScheduler().runTask(PVPServer.getInstance(), () -> clearDispenser(block));
+        }
     }
 
     @SneakyThrows

@@ -1,12 +1,10 @@
 package me.sevj6.pvp.util;
 
-import net.minecraft.server.v1_12_R1.Blocks;
-import net.minecraft.server.v1_12_R1.Item;
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import net.minecraft.server.v1_12_R1.NBTTagList;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -79,5 +77,42 @@ public class ItemUtil {
             if (ItemUtil.illegals.contains(item)) return true;
         }
         return false;
+    }
+
+    public static void revertShulker(Block block) {
+        try {
+            TileEntityShulkerBox shulker = (TileEntityShulkerBox) ((CraftWorld) block.getWorld()).getHandle().getTileEntity(new BlockPosition(block.getX(), block.getY(), block.getZ()));
+            if (shulker == null) return;
+            NBTTagCompound compound = shulker.f(new NBTTagCompound());
+            if (!compound.hasKey("Items")) return;
+            NBTTagList items = (NBTTagList) compound.get("Items");
+            for (int i = 0; i < items.size(); i++) {
+                NBTTagCompound internalCompound = items.get(i);
+                Item item = internalCompound.hasKeyOfType("id", 8) ? Item.b(internalCompound.getString("id")) : Item.getItemOf(Blocks.AIR);
+                if (item == null || item.equals(Item.getItemOf(Blocks.AIR))) return;
+                byte count = internalCompound.getByte("Count");
+                if (count > item.getMaxStackSize()) internalCompound.setByte("Count", (byte) item.getMaxStackSize());
+                if (internalCompound.hasKey("tag")) {
+                    NBTTagCompound tagEnch = internalCompound.getCompound("tag");
+                    if (tagEnch.hasKey("ench")) {
+                        NBTTagList enchants = (NBTTagList) tagEnch.get("ench");
+                        for (int e = 0; e < enchants.size(); e++) {
+                            NBTTagCompound enchantmentCompound = enchants.get(e);
+                            short level = enchantmentCompound.getShort("lvl");
+                            Enchantment enchantment = Enchantment.c(enchantmentCompound.getShort("id"));
+                            if (level > enchantment.getMaxLevel()) {
+                                enchantmentCompound.setShort("lvl", (short) enchantment.getMaxLevel());
+                            }
+                        }
+                    }
+                }
+            }
+            shulker.load(compound);
+            for (net.minecraft.server.v1_12_R1.ItemStack content : shulker.getContents()) {
+                if (ItemUtil.illegals.contains(content.getItem())) content.setCount(-1);
+            }
+            shulker.update();
+        } catch (Throwable ignored) {
+        }
     }
 }
