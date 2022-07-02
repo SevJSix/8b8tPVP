@@ -3,6 +3,7 @@ package me.sevj6.pvp.kit.commands;
 import lombok.AllArgsConstructor;
 import me.sevj6.pvp.kit.Kit;
 import me.sevj6.pvp.kit.KitManager;
+import me.sevj6.pvp.util.ItemUtil;
 import me.sevj6.pvp.util.Utils;
 import net.minecraft.server.v1_12_R1.NBTTagList;
 import org.bukkit.command.Command;
@@ -33,6 +34,10 @@ public class CreateUKitCommand implements CommandExecutor {
                             Kit kit = new Kit(player, name);
                             NBTTagList items = new NBTTagList();
                             ((CraftInventoryPlayer) player.getInventory()).getInventory().a(items);
+                            if (ItemUtil.containsIllegals(items)) {
+                                Utils.sendMessage(player, "&cYou cannot create a user kit containing illegals!");
+                                return true;
+                            }
                             kit.setKitItems(items, true);
                             manager.registerKit(kit);
                             Utils.sendMessage(player, "&3Successfully created kit with name&r&a " + kit.getName());

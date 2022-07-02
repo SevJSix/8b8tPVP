@@ -27,7 +27,7 @@ public class KitGuiBasic extends KitGui {
     }
 
     public void sendKittedMessage(Kit kit) {
-        Utils.sendMessage(player, "&3Set your loadout to &a" + kit.getName());
+        Utils.sendMessage(player, "&3Equipped kit &a" + kit.getName());
     }
 
     public void open() {

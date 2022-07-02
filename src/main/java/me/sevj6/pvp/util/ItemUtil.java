@@ -1,11 +1,18 @@
 package me.sevj6.pvp.util;
 
+import net.minecraft.server.v1_12_R1.Blocks;
+import net.minecraft.server.v1_12_R1.Item;
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
+import net.minecraft.server.v1_12_R1.NBTTagList;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ItemUtil {
 
@@ -41,6 +48,35 @@ public class ItemUtil {
             }
         } else if (object instanceof Block) {
             return ((Block) object).getState() instanceof ShulkerBox;
+        }
+        return false;
+    }
+
+    public static final List<Item> illegals = Arrays.asList(
+            Item.getById(7), //Bedrock
+            Item.getById(166), //Barrier
+            Item.getById(120), // End portal frames
+            Item.getById(52), //Monster spawner
+            Item.getById(255), // Structure block
+            Item.getById(217), //Structure void
+            Item.getById(383), //Spawn egg
+            Item.getById(211), //Chain Command Block
+            Item.getById(210), //Repeating Command Block
+            Item.getById(137), //Command Block
+            Item.getById(422), //Command Block Minecart
+            Item.getById(453), //Knowledge book
+            Item.getById(208), //Grass path
+            Item.getById(60), //Farmland
+            Item.getById(31) //Shrubs
+    );
+
+    public static boolean containsIllegals(NBTTagList tagList) {
+        if (tagList == null) return false;
+        if (tagList.size() == 0) return false;
+        for (int i = 0; i < tagList.size(); i++) {
+            NBTTagCompound compound = tagList.get(i);
+            Item item = compound.hasKeyOfType("id", 8) ? Item.b(compound.getString("id")) : Item.getItemOf(Blocks.AIR);
+            if (ItemUtil.illegals.contains(item)) return true;
         }
         return false;
     }

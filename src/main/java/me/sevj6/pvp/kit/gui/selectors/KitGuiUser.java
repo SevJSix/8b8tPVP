@@ -59,9 +59,9 @@ public class KitGuiUser extends KitGuiBasic {
         if (kitNameFromItem == null) return;
         Kit kit = kitManager.getKits(player).stream().filter(k -> k.getName().equalsIgnoreCase(kitNameFromItem)).findAny().orElse(null);
         if (kit == null) return;
-        kit.setLoadOut(player);
+        boolean equipped = kit.setLoadOut(player);
         player.closeInventory();
-        sendKittedMessage(kit);
+        if (equipped) sendKittedMessage(kit);
     }
 
     private String parseKitName(org.bukkit.inventory.ItemStack itemStack) {
