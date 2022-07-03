@@ -15,10 +15,12 @@ public class Sorter {
     private final Team netherTeam;
     private final Team kitCreatorTeam;
     private final Team noCrystalTeam;
+    private final Team terrainTeam;
     private final String hubPrefix = "[&2hub&r] ";
     private final String netherPrefix = "[&cnether&r] ";
     private final String kitCreatorPrefix = "[&5kitcreator&r] ";
     private final String noCrystalPrefix = "[&3nocrystal&r] ";
+    private final String terrainPrefix = "[&7terrain&r] ";
 
     public Sorter() {
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -26,10 +28,12 @@ public class Sorter {
         this.netherTeam = scoreboard.registerNewTeam("nether");
         this.kitCreatorTeam = scoreboard.registerNewTeam("end");
         this.noCrystalTeam = scoreboard.registerNewTeam("nocrystal");
+        this.terrainTeam = scoreboard.registerNewTeam("terrain");
         hubTeam.setPrefix(parse("[&2hub&r]"));
         netherTeam.setPrefix(parse("[&cnether&r]"));
         kitCreatorTeam.setPrefix(parse("[&5kitcreator&r]"));
         noCrystalTeam.setPrefix(parse("[&3nocrystal&r]"));
+        terrainTeam.setPrefix("[&7terrain&r]");
     }
 
     public void set(Player player, Team team) {

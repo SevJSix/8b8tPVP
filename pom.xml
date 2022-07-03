@@ -63,6 +63,14 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>enginehub-maven</id>
+            <url>https://maven.enginehub.org/repo/</url>
+        </repository>
+        <repository>
+            <id>papermc-repo</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -82,6 +90,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.22</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-bukkit</artifactId>
+            <version>6.1.4-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

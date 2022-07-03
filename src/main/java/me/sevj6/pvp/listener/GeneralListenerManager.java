@@ -8,7 +8,7 @@ import me.sevj6.pvp.listener.listeners.DisableActivity;
 import me.sevj6.pvp.listener.listeners.Miscellaneous;
 import me.sevj6.pvp.listener.listeners.PvPListeners;
 import me.sevj6.pvp.listener.listeners.exploits.ArrowVelocityFix;
-import me.sevj6.pvp.listener.listeners.exploits.IllegalBlockUsage;
+import me.sevj6.pvp.listener.listeners.exploits.IllegalKits;
 import me.sevj6.pvp.listener.listeners.exploits.NormalPacketFly;
 import me.sevj6.pvp.listener.listeners.exploits.PhaseRelatedPacketFly;
 import me.sevj6.pvp.listener.listeners.frames.FrameListener;
@@ -30,7 +30,7 @@ public class GeneralListenerManager extends Manager {
         Bukkit.getPluginManager().registerEvents(new ArrowVelocityFix(), plugin);
         Bukkit.getPluginManager().registerEvents(new PvPListeners(), plugin);
         Bukkit.getPluginManager().registerEvents(new FrameListener(), plugin);
-        Bukkit.getPluginManager().registerEvents(new IllegalBlockUsage(), plugin);
+        Bukkit.getPluginManager().registerEvents(new IllegalKits(), plugin);
         plugin.getDispatcher().register(new ListenerArmSwing(), PacketPlayInArmAnimation.class);
         plugin.getDispatcher().register(new ListenerCrystalPlace(), PacketPlayInUseItem.class);
         plugin.getDispatcher().register(new ListenerTotemPop(), PacketPlayOutEntityStatus.class);

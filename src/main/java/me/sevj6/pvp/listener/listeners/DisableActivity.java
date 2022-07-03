@@ -1,7 +1,6 @@
 package me.sevj6.pvp.listener.listeners;
 
 import lombok.SneakyThrows;
-import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.event.PlayerPlaceCrystalEvent;
 import me.sevj6.pvp.util.Utils;
 import net.minecraft.server.v1_12_R1.*;
@@ -18,9 +17,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockGrowEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -34,6 +34,14 @@ public class DisableActivity implements Listener {
 
     public DisableActivity() {
         this.SWORD_FIGHT = Bukkit.getWorld("swordfight");
+    }
+
+    public static void sendBlockChangePacket(Player player, Location... locations) {
+        EntityPlayer handle = ((CraftPlayer) player).getHandle();
+        for (Location l : locations) {
+            handle.playerConnection.sendPacket(new PacketPlayOutBlockChange(((CraftWorld) player.getWorld()).getHandle(), new BlockPosition(l.getX(), l.getY(), l.getZ())));
+
+        }
     }
 
     @EventHandler
@@ -57,19 +65,10 @@ public class DisableActivity implements Listener {
     }
 
     @EventHandler
-    public void onPlace(BlockPlaceEvent event) {
-        Player player = event.getPlayer();
-        if (playerNotInArena(player)) {
-            event.setCancelled(true);
-            sendBlockChangePacket(player, event.getBlockPlaced().getLocation(), event.getBlock().getLocation(), event.getBlockAgainst().getLocation());
-        } else if (event.getBlockPlaced().getType().equals(Material.ENDER_CHEST)) {
-            Location location = event.getBlockPlaced().getLocation();
-            Bukkit.getScheduler().runTaskLater(PVPServer.getInstance(), () -> {
-                if (location.getWorld().getBlockAt(location).getType() == Material.ENDER_CHEST) {
-                    location.getWorld().getBlockAt(location).setType(Material.AIR);
-                }
-            }, (20L * 120L));
-        }
+    public void onBlowUp(EntityExplodeEvent event) {
+        Location location = event.getLocation();
+        if (Utils.isPositionInArena(new BlockPosition(location.getX(), location.getY(), location.getZ()))) return;
+        event.setCancelled(true);
     }
 
     @EventHandler
@@ -181,6 +180,12 @@ public class DisableActivity implements Listener {
     }
 
     @EventHandler
+    public void onEchest(InventoryOpenEvent event) {
+        if (event.getPlayer().isOp()) return;
+        if (event.getInventory().getType() == InventoryType.ENDER_CHEST) event.setCancelled(true);
+    }
+
+    @EventHandler
     public void onHangingBreak(HangingBreakEvent event) {
         event.setCancelled(true);
     }
@@ -201,13 +206,5 @@ public class DisableActivity implements Listener {
     private boolean playerNotInArena(Player player) {
         if (((CraftPlayer) player).getHandle().isCreativeAndOp()) return false;
         return !Utils.isPlayerInArena(player);
-    }
-
-    private void sendBlockChangePacket(Player player, Location... locations) {
-        EntityPlayer handle = ((CraftPlayer) player).getHandle();
-        for (Location l : locations) {
-            handle.playerConnection.sendPacket(new PacketPlayOutBlockChange(((CraftWorld) player.getWorld()).getHandle(), new BlockPosition(l.getX(), l.getY(), l.getZ())));
-
-        }
     }
 }

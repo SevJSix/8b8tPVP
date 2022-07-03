@@ -5,8 +5,14 @@ import me.sevj6.pvp.arena.boiler.Arena;
 import net.minecraft.server.v1_12_R1.AxisAlignedBB;
 import net.minecraft.server.v1_12_R1.BlockPosition;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Getter
 public class Portal implements IPortal {
@@ -17,6 +23,7 @@ public class Portal implements IPortal {
     private final BlockPosition topCorner;
     private final AxisAlignedBB boundingBox;
     private final Arena exitArena;
+    private final List<Material> dontSpawnOn = Arrays.asList(Material.LAVA, Material.WATER, Material.STATIONARY_LAVA, Material.STATIONARY_WATER, Material.CACTUS, Material.FIRE, Material.MAGMA);
 
     public Portal(String name, World world, BlockPosition bottomCorner, BlockPosition topCorner, Arena exitArena) {
         this.name = name;
@@ -35,9 +42,15 @@ public class Portal implements IPortal {
 
     @Override
     public void randomlySpawnPlayer(Player player, World world, int xRange, int zRange) {
-        int x = genRandomNumber(-xRange, xRange), z = genRandomNumber(-zRange, zRange), y = 0;
-        Location exitLocation = new Location(world, x, y, z, player.getLocation().getYaw(), player.getLocation().getPitch());
-        exitLocation.setY(world.getHighestBlockYAt(exitLocation));
-        player.teleport(exitLocation);
+        Location location = null;
+        int attempts = 0;
+        while (location == null) {
+            attempts++;
+            location = world.getHighestBlockAt(genRandomNumber(-xRange, xRange), genRandomNumber(-zRange, zRange)).getLocation();
+            if (attempts > 500) break;
+            if (dontSpawnOn.contains(location.getBlock().getType()) || dontSpawnOn.contains(location.getBlock().getRelative(BlockFace.DOWN).getType()))
+                location = null;
+        }
+        player.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
     }
 }

@@ -3,11 +3,11 @@ package me.sevj6.pvp.listener.listeners;
 import lombok.SneakyThrows;
 import me.sevj6.pvp.PVPServer;
 import me.sevj6.pvp.util.ItemUtil;
-import net.minecraft.server.v1_12_R1.BlockPosition;
-import net.minecraft.server.v1_12_R1.NonNullList;
-import net.minecraft.server.v1_12_R1.TileEntityDispenser;
-import net.minecraft.server.v1_12_R1.World;
+import me.sevj6.pvp.util.Utils;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
@@ -23,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 public class PvPListeners implements Listener {
@@ -54,10 +55,42 @@ public class PvPListeners implements Listener {
         }
     }
 
+    @SneakyThrows
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
-        if (event.isCancelled() || event.getBlockPlaced() == null) return;
+        if (!Utils.isPlayerInArena(event.getPlayer()) && !event.getPlayer().isOp()) {
+            event.setCancelled(true);
+            DisableActivity.sendBlockChangePacket(event.getPlayer(), event.getBlockPlaced().getLocation(), event.getBlock().getLocation(), event.getBlockAgainst().getLocation());
+            return;
+        }
+        if (event.getBlockPlaced() == null) return;
         Block block = event.getBlockPlaced();
+        if (block.getType() == Material.REDSTONE_WIRE) {
+            event.setCancelled(true);
+            return;
+        }
+        if (block.getType().equals(Material.SPONGE)) {
+            World world = ((CraftWorld) event.getBlockPlaced().getWorld()).getHandle();
+            Location location = block.getLocation();
+            IBlockData blockData = world.getType(new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+            BlockSponge sponge = (BlockSponge) blockData.getBlock();
+            Method absorbM = BlockSponge.class.getDeclaredMethod("b", World.class, BlockPosition.class);
+            absorbM.setAccessible(true);
+            int range = 5;
+            for (int x = location.getBlockX() - range; x <= location.getBlockX() + range; x++) {
+                for (int y = location.getBlockY() - range; y <= location.getBlockY() + range; y++) {
+                    for (int z = location.getBlockZ() - range; z <= location.getBlockZ() + range; z++) {
+                        BlockPosition pos = new BlockPosition(x, y, z);
+                        absorbM.invoke(sponge, world, pos);
+                    }
+                }
+            }
+            return;
+        }
+        if (block.getType().equals(org.bukkit.Material.BEDROCK)) {
+            event.setCancelled(true);
+            return;
+        }
         if (!(block.getState() instanceof ShulkerBox)) return;
         ItemUtil.revertShulker(block);
     }

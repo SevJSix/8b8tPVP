@@ -14,6 +14,24 @@ import java.util.List;
 
 public class ItemUtil {
 
+    public static final List<Item> illegals = Arrays.asList(
+            Item.getById(7), //Bedrock
+            Item.getById(166), //Barrier
+            Item.getById(120), // End portal frames
+            Item.getById(52), //Monster spawner
+            Item.getById(255), // Structure block
+            Item.getById(217), //Structure void
+            Item.getById(383), //Spawn egg
+            Item.getById(211), //Chain Command Block
+            Item.getById(210), //Repeating Command Block
+            Item.getById(137), //Command Block
+            Item.getById(422), //Command Block Minecart
+            Item.getById(453), //Knowledge book
+            Item.getById(208), //Grass path
+            Item.getById(60), //Farmland
+            Item.getById(31) //Shrubs
+    );
+
     private static boolean isInvalid(ItemStack itemStack) {
         return itemStack == null || itemStack.getType().equals(Material.AIR);
     }
@@ -50,33 +68,27 @@ public class ItemUtil {
         return false;
     }
 
-    public static final List<Item> illegals = Arrays.asList(
-            Item.getById(7), //Bedrock
-            Item.getById(166), //Barrier
-            Item.getById(120), // End portal frames
-            Item.getById(52), //Monster spawner
-            Item.getById(255), // Structure block
-            Item.getById(217), //Structure void
-            Item.getById(383), //Spawn egg
-            Item.getById(211), //Chain Command Block
-            Item.getById(210), //Repeating Command Block
-            Item.getById(137), //Command Block
-            Item.getById(422), //Command Block Minecart
-            Item.getById(453), //Knowledge book
-            Item.getById(208), //Grass path
-            Item.getById(60), //Farmland
-            Item.getById(31) //Shrubs
-    );
-
     public static boolean containsIllegals(NBTTagList tagList) {
         if (tagList == null) return false;
         if (tagList.size() == 0) return false;
+        boolean isIllegal = false;
         for (int i = 0; i < tagList.size(); i++) {
             NBTTagCompound compound = tagList.get(i);
             Item item = compound.hasKeyOfType("id", 8) ? Item.b(compound.getString("id")) : Item.getItemOf(Blocks.AIR);
-            if (ItemUtil.illegals.contains(item)) return true;
+            if (ItemUtil.illegals.contains(item)) isIllegal = true;
+            if (compound.hasKey("tag")) {
+                NBTTagCompound blockEntityTag = compound.getCompound("tag").getCompound("BlockEntityTag");
+                if (blockEntityTag.hasKey("Items")) {
+                    NBTTagList items = (NBTTagList) blockEntityTag.get("Items");
+                    for (int i1 = 0; i1 < items.size(); i1++) {
+                        NBTTagCompound internalCompound = items.get(i1);
+                        Item itemInShulker = internalCompound.hasKeyOfType("id", 8) ? Item.b(internalCompound.getString("id")) : Item.getItemOf(Blocks.AIR);
+                        if (ItemUtil.illegals.contains(itemInShulker)) isIllegal = true;
+                    }
+                }
+            }
         }
-        return false;
+        return isIllegal;
     }
 
     public static void revertShulker(Block block) {

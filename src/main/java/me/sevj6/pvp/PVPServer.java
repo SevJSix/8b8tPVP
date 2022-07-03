@@ -23,6 +23,7 @@ import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -50,6 +51,7 @@ public final class PVPServer extends JavaPlugin {
     private List<ViolationManager> violationManagers;
     private ScheduledExecutorService service;
     private KitManager kitManager;
+    private File schematicsDataFolder;
 
     @Override
     public void onEnable() {
@@ -63,6 +65,8 @@ public final class PVPServer extends JavaPlugin {
         sorter = new Sorter();
         tablist = new Tablist8b8t(this);
         violationManagers = new ArrayList<>();
+        schematicsDataFolder = new File(getDataFolder(), "Schematics");
+        if (!schematicsDataFolder.exists()) schematicsDataFolder.mkdirs();
         addManager(arenaManager);
         addManager(kitManager);
         addManager(new PortalManager());

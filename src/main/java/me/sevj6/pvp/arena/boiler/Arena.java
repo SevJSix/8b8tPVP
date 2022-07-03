@@ -1,6 +1,8 @@
 package me.sevj6.pvp.arena.boiler;
 
+import lombok.SneakyThrows;
 import me.sevj6.pvp.util.Utils;
+import me.sevj6.pvp.util.WorldEditUtil;
 import net.minecraft.server.v1_12_R1.AxisAlignedBB;
 import net.minecraft.server.v1_12_R1.BlockPosition;
 import org.bukkit.*;
@@ -9,13 +11,12 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Arena extends AbstractArena implements Serializable {
+public class Arena extends AbstractArena {
 
     protected List<Material> invalidMaterials = Arrays.asList(Material.AIR, Material.BEDROCK);
     protected List<EntityType> whitelistedEntities = Arrays.asList(EntityType.ITEM_FRAME, EntityType.PLAYER, EntityType.ARMOR_STAND);
@@ -34,12 +35,19 @@ public class Arena extends AbstractArena implements Serializable {
         });
     }
 
+    @SneakyThrows
     @Override
     public void clear() {
         long start = System.currentTimeMillis();
-        findAllBlocks(getAllLocations(getFirstPosition(), getSecondPosition())).forEach(block -> {
-            block.setType(Material.AIR);
-        });
+        World world = getWorld();
+        if (world.getName().equalsIgnoreCase("terrain")) {
+            Location pasteLocation = new Location(world, -50, 0, 50);
+            WorldEditUtil.pasteSchematicMcEdit(world, "terrain", pasteLocation);
+        } else {
+            findAllBlocks(getAllLocations(getFirstPosition(), getSecondPosition())).forEach(block -> {
+                block.setType(Material.AIR);
+            });
+        }
         getAllEntities().stream().filter(entity -> !whitelistedEntities.contains(entity.getType())).forEach(Entity::remove);
         long finish = (System.currentTimeMillis() - start);
         Bukkit.getOnlinePlayers().stream().filter(this::isPlayerInArena).forEach(p -> Utils.sendMessage(p, String.format("&aFinished clearing your current arena in&r&3 %dms&r", finish)));

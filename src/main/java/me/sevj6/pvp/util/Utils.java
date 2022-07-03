@@ -86,9 +86,8 @@ public class Utils {
     }
 
     public static void log(String message) {
-        StackTraceElement element = Thread.currentThread().getStackTrace()[2];
         message = translateChars(message);
-        PVPServer.getInstance().getLogger().log(Level.INFO, String.format("%s%c%s", message, Character.MIN_VALUE, element.getClassName()));
+        PVPServer.getInstance().getLogger().log(Level.INFO, String.format("%s%c", message, Character.MIN_VALUE));
     }
 
     public static void log(String message, Manager manager) {
@@ -197,6 +196,10 @@ public class Utils {
             case "swordfight":
                 sorter.set(player, sorter.getNoCrystalTeam());
                 player.setPlayerListName(sorter.parse(sorter.getNoCrystalPrefix() + player.getName()));
+                break;
+            case "terrain":
+                sorter.set(player, sorter.getTerrainTeam());
+                player.setPlayerListName(sorter.parse(sorter.getTerrainPrefix() + player.getName()));
                 break;
         }
     }

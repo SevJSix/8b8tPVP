@@ -4,6 +4,8 @@ main: me.sevj6.pvp.PVPServer
 authors: [ SevJ6, 254n_m ]
 description: Main plugin for 8b8tpvp hosted by leee developed by SevJ6 and 254n_m
 load: POSTWORLD
+depend:
+  - FastAsyncWorldEdit
 commands:
   clear:
     description: clear all arenas
