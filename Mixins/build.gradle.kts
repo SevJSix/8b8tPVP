@@ -6,23 +6,36 @@ plugins {
 
 repositories {
     mavenLocal()
+    mavenCentral()
     maven { url = uri("https://repo.txmc.me/releases") }
-    maven { url = uri("https://oss.sonatype.org/content/groups/public/") }
-    maven { url = uri("https://repo.maven.apache.org/maven2/") }
-    maven { url = uri("https://maven.enginehub.org/repo/") }
 }
 
 dependencies {
-    implementation("me.txmc:protocolapi:1.2-SNAPSHOT")
+    implementation("me.txmc:rtmixin:1.3-BETA")
+    compileOnly(project(":Plugin"))
     compileOnly("com.destroystokyo.paper:paper-jar:1.12.2-R0.1-SNAPSHOT")
     compileOnly("org.projectlombok:lombok:1.18.24")
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:6.1.4-SNAPSHOT")
     annotationProcessor("org.projectlombok:lombok:1.18.24")
 }
 
 tasks.shadowJar {
     exclude("pom.*")
+    manifest {
+        attributes(
+            "Manifest-Version" to "1.0",
+            "Premain-Class" to "me.txmc.rtmixin.jagent.AgentMain",
+            "Agent-Class" to "me.txmc.rtmixin.jagent.AgentMain",
+            "Can-Redefine-Classes" to "true",
+            "Can-Retransform-Classes" to "true",
+            "Can-Set-Native-Method-Prefix" to "true"
+        )
+    }
     minimize()
+}
+
+tasks.register("customBuild") {
+    project.buildDir.delete()
+    dependsOn(tasks.named("shadowJar"))
 }
 
 group = "me.sevj6"
@@ -33,5 +46,6 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 tasks.withType<JavaCompile>() {
     options.encoding = "UTF-8"
 }
+//This is to make intelij work properly
 tasks.register<Wrapper>("wrapper")
 tasks.register("prepareKotlinBuildScriptModel"){}

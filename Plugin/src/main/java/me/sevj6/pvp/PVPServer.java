@@ -24,6 +24,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -76,28 +79,48 @@ public final class PVPServer extends JavaPlugin {
         service = Executors.newScheduledThreadPool(4);
         service.scheduleAtFixedRate(() -> violationManagers.forEach(ViolationManager::decrementAll), 0, 1, TimeUnit.SECONDS);
 
-        kitCreator = new Location(
-                Bukkit.getWorld(PVPServer.getInstance().getConfig().getString("KitCreator.world")),
-                PVPServer.getInstance().getConfig().getDouble("KitCreator.x"),
-                PVPServer.getInstance().getConfig().getDouble("KitCreator.y"),
-                PVPServer.getInstance().getConfig().getDouble("KitCreator.z"),
-                (float) PVPServer.getInstance().getConfig().getDouble("KitCreator.yaw"),
-                (float) PVPServer.getInstance().getConfig().getDouble("KitCreator.pitch")
-        );
-        spawn = new Location(
-                Bukkit.getWorld(PVPServer.getInstance().getConfig().getString("Hub.world")),
-                PVPServer.getInstance().getConfig().getDouble("Hub.x"),
-                PVPServer.getInstance().getConfig().getDouble("Hub.y"),
-                PVPServer.getInstance().getConfig().getDouble("Hub.z"),
-                (float) PVPServer.getInstance().getConfig().getDouble("Hub.yaw"),
-                (float) PVPServer.getInstance().getConfig().getDouble("Hub.pitch")
-        );
+//        kitCreator = new Location(
+//                Bukkit.getWorld(PVPServer.getInstance().getConfig().getString("KitCreator.world")),
+//                PVPServer.getInstance().getConfig().getDouble("KitCreator.x"),
+//                PVPServer.getInstance().getConfig().getDouble("KitCreator.y"),
+//                PVPServer.getInstance().getConfig().getDouble("KitCreator.z"),
+//                (float) PVPServer.getInstance().getConfig().getDouble("KitCreator.yaw"),
+//                (float) PVPServer.getInstance().getConfig().getDouble("KitCreator.pitch")
+//        );
+//        spawn = new Location(
+//                Bukkit.getWorld(PVPServer.getInstance().getConfig().getString("Hub.world")),
+//                PVPServer.getInstance().getConfig().getDouble("Hub.x"),
+//                PVPServer.getInstance().getConfig().getDouble("Hub.y"),
+//                PVPServer.getInstance().getConfig().getDouble("Hub.z"),
+//                (float) PVPServer.getInstance().getConfig().getDouble("Hub.yaw"),
+//                (float) PVPServer.getInstance().getConfig().getDouble("Hub.pitch")
+//        );
+        loadMixinJar();
         dispatchCommand("gamerule doFireTick false");
         dispatchCommand("gamerule announceAdvancements false");
         dispatchCommand("gamerule mobGriefing false");
         dispatchCommand("gamerule doDaylightCycle false");
         dispatchCommand("gamerule doWeatherCycle false");
         dispatchCommand("gamerule commandBlockOutput false");
+    }
+
+    private void loadMixinJar() {
+        File mixinJar = new File(new File(getDataFolder(), "MixinJar"), "8b8tPVP.Mixins.jar");
+        if (mixinJar.exists()) {
+            try {
+                URLClassLoader ccl = new URLClassLoader(new URL[]{mixinJar.toURI().toURL()});
+                Class<?> main = Class.forName("me.sevj6.pvp.mixin.Main", true, ccl);
+                Method initM = main.getDeclaredMethod("init");
+                initM.setAccessible(true);
+                initM.invoke(null);
+            } catch (Throwable t) {
+                if (t instanceof ClassNotFoundException) {
+                    getLogger().warning("Failed to load mixin jar please see stacktrace for more info.");
+                }
+                t.printStackTrace();
+            }
+        } else getLogger().warning("Mixin jar not found the plugin will not work correctly!");
+
     }
 
     private void dispatchCommand(String command) {
