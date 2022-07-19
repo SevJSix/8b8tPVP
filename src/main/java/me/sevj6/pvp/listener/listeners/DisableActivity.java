@@ -2,6 +2,7 @@ package me.sevj6.pvp.listener.listeners;
 
 import lombok.SneakyThrows;
 import me.sevj6.pvp.event.PlayerPlaceCrystalEvent;
+import me.sevj6.pvp.skywars.SkywarsManager;
 import me.sevj6.pvp.util.Utils;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
@@ -47,6 +48,8 @@ public class DisableActivity implements Listener {
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
+        if (SkywarsManager.getInstance().isPlayerInMatch(player) && !SkywarsManager.getInstance().getMatch().isInProgress())
+            event.setCancelled(true);
         if (playerNotInArena(player)) {
             event.setCancelled(true);
             sendBlockChangePacket(player, event.getBlock().getLocation());
@@ -148,19 +151,15 @@ public class DisableActivity implements Listener {
 
     @EventHandler
     public void onCrystalSpawn(PlayerPlaceCrystalEvent event) {
-        if (SWORD_FIGHT.equals(event.getPlayer().getWorld())) {
-            cancelCrystal(event);
+        if (event.getPlayer().getWorld().getName().equalsIgnoreCase("swordfight")) {
+            event.setCancelled(true);
             return;
         }
-        if (Utils.isPlayerInArena(event.getPlayer())) return;
-        cancelCrystal(event);
-    }
-
-    private void cancelCrystal(PlayerPlaceCrystalEvent event) {
-        event.setCancelled(true);
-        if (event.getCrystal() == null) return;
-        event.getCrystal().setInvulnerable(true);
-        event.getCrystal().die();
+        if (!Utils.isPlayerInArena(event.getPlayer())) {
+            event.setCancelled(true);
+            return;
+        }
+        if (event.getPlayer().getWorld().getName().equalsIgnoreCase("world_nether")) event.explodeCrystal();
     }
 
     @EventHandler

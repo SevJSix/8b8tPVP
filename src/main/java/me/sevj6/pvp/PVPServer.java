@@ -9,6 +9,7 @@ import me.sevj6.pvp.listener.listeners.InteractListener;
 import me.sevj6.pvp.listener.tablist.Sorter;
 import me.sevj6.pvp.listener.tablist.Tablist8b8t;
 import me.sevj6.pvp.portals.PortalManager;
+import me.sevj6.pvp.skywars.SkywarsManager;
 import me.sevj6.pvp.util.ViolationManager;
 import me.txmc.protocolapi.PacketEventDispatcher;
 import me.txmc.protocolapi.PacketListener;
@@ -72,6 +73,7 @@ public final class PVPServer extends JavaPlugin {
         addManager(new PortalManager());
         addManager(new GeneralListenerManager());
         addManager(new GeneralCommandManager());
+        addManager(new SkywarsManager());
         managers.forEach(m -> m.init(this));
         service = Executors.newScheduledThreadPool(4);
         service.scheduleAtFixedRate(() -> violationManagers.forEach(ViolationManager::decrementAll), 0, 1, TimeUnit.SECONDS);

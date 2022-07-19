@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class Arena extends AbstractArena {
@@ -35,14 +36,19 @@ public class Arena extends AbstractArena {
         });
     }
 
+    private final List<String> schematicNames = Arrays.asList("terrain", "nether");
+
     @SneakyThrows
     @Override
     public void clear() {
         long start = System.currentTimeMillis();
         World world = getWorld();
         if (world.getName().equalsIgnoreCase("terrain")) {
-            Location pasteLocation = new Location(world, -50, 0, 50);
-            WorldEditUtil.pasteSchematicMcEdit(world, "terrain", pasteLocation);
+            String schemName = schematicNames.get(ThreadLocalRandom.current().nextInt(0, schematicNames.size()));
+            Location pasteLocation;
+            if (schemName.equalsIgnoreCase("nether")) pasteLocation = new Location(world, 50, 0, -50);
+            else pasteLocation = new Location(world, -50, 0, 50);
+            WorldEditUtil.pasteSchematicMcEdit(world, schemName, pasteLocation);
         } else {
             findAllBlocks(getAllLocations(getFirstPosition(), getSecondPosition())).forEach(block -> {
                 block.setType(Material.AIR);

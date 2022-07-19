@@ -201,6 +201,9 @@ public class Utils {
                 sorter.set(player, sorter.getTerrainTeam());
                 player.setPlayerListName(sorter.parse(sorter.getTerrainPrefix() + player.getName()));
                 break;
+            default:
+                player.setPlayerListName(sorter.parse("[" + player.getWorld().getName() + "] " + player.getName()));
+                break;
         }
     }
 
