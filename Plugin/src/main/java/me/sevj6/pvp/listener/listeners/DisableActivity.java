@@ -147,23 +147,6 @@ public class DisableActivity implements Listener {
     }
 
     @EventHandler
-    public void onCrystalSpawn(PlayerPlaceCrystalEvent event) {
-        if (SWORD_FIGHT.equals(event.getPlayer().getWorld())) {
-            cancelCrystal(event);
-            return;
-        }
-        if (Utils.isPlayerInArena(event.getPlayer())) return;
-        cancelCrystal(event);
-    }
-
-    private void cancelCrystal(PlayerPlaceCrystalEvent event) {
-        event.setCancelled(true);
-        if (event.getCrystal() == null) return;
-        event.getCrystal().setInvulnerable(true);
-        event.getCrystal().die();
-    }
-
-    @EventHandler
     public void onBow(ProjectileLaunchEvent event) {
         if (event.getEntity().getShooter() instanceof Player) {
             Player player = (Player) event.getEntity().getShooter();

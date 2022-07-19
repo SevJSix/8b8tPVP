@@ -1,11 +1,14 @@
 package me.sevj6.pvp.mixin.mixins;
 
+import me.sevj6.pvp.util.Utils;
 import me.txmc.rtmixin.CallbackInfo;
 import me.txmc.rtmixin.mixin.At;
 import me.txmc.rtmixin.mixin.Inject;
 import me.txmc.rtmixin.mixin.MethodInfo;
+import net.minecraft.server.v1_12_R1.BlockPosition;
 import net.minecraft.server.v1_12_R1.EntityEnderCrystal;
 import net.minecraft.server.v1_12_R1.World;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 
 /**
  * @author 254n_m
@@ -17,6 +20,8 @@ public class MixinEnderCrystal {
     public static void onEnderCrystalCreate(CallbackInfo ci) {
         EntityEnderCrystal entityEnderCrystal = (EntityEnderCrystal) ci.getSelf();
         World world = (World) ci.getParameters()[0];
-        System.out.println(world);
+        BlockPosition position = new BlockPosition(entityEnderCrystal.getX(), entityEnderCrystal.getY(), entityEnderCrystal.getZ());
+        System.out.println(MixinEnderCrystal.class.getClassLoader().getClass().getName());
+        if (!Utils.isPositionInArena(position) || world.toString().contains("swordfight")) entityEnderCrystal.die();
     }
 }
